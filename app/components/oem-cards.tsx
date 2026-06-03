@@ -6,21 +6,9 @@ import Link from "next/link";
 const devices = [
   {
     name: "Logitech",
-    logo: "\homelogo1.png",
-    image: "\image 77.png",
+    logo: "/homelogo1.png",
+    image: "/image 77.png",
     link: "/oem/Logitech",
-  },
-  {
-    name: "Poly | HP",
-    logo: "\homelogo2.png",
-    image: "\Poly-x70-1-1.png",
-    link: "/oem/Poly",
-  },
-  {
-    name: "Neat",
-    logo: "\homelogo3.png",
-    image: "/Neat-1.png",
-    link: "/oem/Neat",
   },
 ];
 
@@ -45,12 +33,14 @@ export default function DeviceNavigation() {
         </h2> */}
 
         {/* GRID */}
-        <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 ${boxGap}`}>
+        <div className="flex justify-center">
           {devices.map((item, index) => (
             <Link
               key={index}
               href={item.link}
               className={`
+                max-w-[400px]
+                w-full
                 rounded-3xl
                 border border-gray-300
                 bg-white

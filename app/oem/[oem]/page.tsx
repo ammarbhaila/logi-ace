@@ -24,11 +24,15 @@ type Product = {
   menu_order: number | null;
 };
 
-import { useParams } from "next/navigation";
+import { useParams, notFound } from "next/navigation";
 
 export default function OEMPage() {
   const { addItem } = useCart();
   const { oem } = useParams<{ oem: string }>();
+
+  if (oem && oem.toLowerCase() !== "logitech") {
+    notFound();
+  }
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);

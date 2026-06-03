@@ -24,7 +24,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const FROM_EMAIL = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
-const FROM_NAME = process.env.SMTP_FROM_NAME || "SHI UC Hub";
+const FROM_NAME = process.env.SMTP_FROM_NAME || "Logi-Ace";
 
 const STYLES = {
   body: 'margin:0;padding:0;font-family:\'Segoe UI\', Tahoma, Geneva, Verdana, sans-serif;',
@@ -80,7 +80,7 @@ export async function GET(req: NextRequest) {
                 <table width="650" style="${STYLES.container}" cellpadding="0" cellspacing="0">
                   
                   <!-- HEADER -->
-                  <tr><td align="center" style="${STYLES.header} text-align:center;"><img src="cid:logoimg" width="170" alt="SHI UC HUB" style="display:inline-block;"></td></tr>
+                  <tr><td align="center" style="${STYLES.header} text-align:center;"><img src="cid:logoimg" width="170" alt="Logi-Ace" style="display:inline-block;"></td></tr>
                   
                   <!-- TITLE -->
                   <tr>
@@ -96,13 +96,13 @@ export async function GET(req: NextRequest) {
                     <td style="padding:40px; text-align:left;">
                       <p style="font-size:14px;color:#334b59;line-height:20px;">Hi ${profile.first_name},</p>
                       <p style="font-size:14px;color:#334b59;line-height:20px;">Your account has been <strong>successfully verified and activated</strong>.</p>
-                      <p style="font-size:14px;color:#334b59;line-height:20px;">You can now log in and access SHI UC Hub.</p>
+                      <p style="font-size:14px;color:#334b59;line-height:20px;">You can now log in and access Logi-Ace.</p>
                       
                       <div style="margin-top:24px; background: #f8fafc; padding: 20px; border-radius: 8px; border:1px solid #e7edf2;">
                         <p style="margin:0;font-size:13px;">Email: <strong>${profile.email}</strong></p>
                       </div>
                       
-                      <p style="margin-top:24px;font-size:14px;color:#334b59;">Regards,<br/>SHI UC Hub Team</p>
+                      <p style="margin-top:24px;font-size:14px;color:#334b59;">Regards,<br/>The Logi-Ace Team</p>
                     </td>
                   </tr>
 
@@ -120,7 +120,7 @@ export async function GET(req: NextRequest) {
       from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
       to: profile.email,                  // ✅ USER
       bcc: "ammar@works360.com",      // ✅ ADMIN / SUPPORT
-      subject: "Account Verified | SHI UC Hub",
+      subject: "Account Verified | Logi-Ace",
       html: emailHtml,
       attachments: [
         {

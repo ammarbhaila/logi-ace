@@ -43,7 +43,7 @@ export function HeroSlider() {
             </h1>
 
             <p className="text-sm text-gray-600 mt-3">
-              Browse room solutions to create and send demo-kits in just a few simple steps The UC HUB has been developed to provide SHI sales executives the unique opportunity to order demo-kits for their most valued customers. Checkout easy-to-use, high quality conferencing solutions for all room sizes in just a few simple steps and have them in your customer’s hands within days!
+              Browse room solutions to create and send demo-kits in just a few simple steps. Logi-Ace has been developed to provide sales executives the unique opportunity to order demo-kits for their most valued customers. Checkout easy-to-use, high quality conferencing solutions for all room sizes in just a few simple steps and have them in your customer’s hands within days!
             </p>
 
             {/* <button
@@ -72,7 +72,7 @@ export function HeroSlider() {
             </h1>
 
             <p className="text-black font-normal text-lg lg:text-[13px] xl:text-[16px] 2xl:text-[18px] text-gray-800 mt-4 lg:max-w-[450px] xl:max-w-[560px] 2xl:max-w-[650px]">
-              Browse room solutions to create and send demo-kits in just a few simple steps The UC HUB has been developed to provide SHI sales executives the unique opportunity to order demo-kits for their most valued customers. Checkout easy-to-use, high quality conferencing solutions for all room sizes in just a few simple steps and have them in your customer’s hands within days!
+              Browse room solutions to create and send demo-kits in just a few simple steps. Logi-Ace has been developed to provide sales executives the unique opportunity to order demo-kits for their most valued customers. Checkout easy-to-use, high quality conferencing solutions for all room sizes in just a few simple steps and have them in your customer’s hands within days!
             </p>
 
 

@@ -304,45 +304,15 @@ export default function Header() {
                       </Link>
 
                       {n.href === "/how-it-works" && (
-                        <div
-                          className="relative"
-                          onMouseEnter={() => setOemOpen(true)}
-                          onMouseLeave={() => setOemOpen(false)}
+                        <Link
+                          href="/oem/logitech"
+                          className={`relative px-2 py-1 hover:text-black
+                            ${pathname === "/oem/logitech" ? "text-black after:w-full" : ""}
+                            after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:-bottom-[2px]
+                            after:h-[2px] after:w-0 after:bg-black after:transition-all hover:after:w-full`}
                         >
-                          <button
-                            onClick={() => setOemOpen(!oemOpen)}
-                            className="px-2 py-1 hover:text-black"
-                          >
-                            Create Demo Kit
-                          </button>
-
-                          {oemOpen && (
-                            <div className="absolute top-full mt-0 w-35 bg-white border border-gray-100 rounded-md shadow-lg py-1 z-[60]">
-                              <Link
-                                href="/oem/poly"
-                                className={`flex items-center gap-2.5 px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${pathname === '/oem/poly' ? 'text-[#112F45] font-medium' : 'text-gray-700'}`}
-                                onClick={() => setOemOpen(false)}
-                              >
-                                Poly
-                              </Link>
-                              <Link
-                                href="/oem/logitech"
-                                className={`flex items-center gap-2.5 px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${pathname === '/oem/logitech' ? 'text-[#112F45] font-medium' : 'text-gray-700'}`}
-                                onClick={() => setOemOpen(false)}
-                              >
-                                Logitech
-                              </Link>
-                              <Link
-                                href="/oem/neat"
-                                className={`flex items-center gap-2.5 px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${pathname === '/oem/neat' ? 'text-[#112F45] font-medium' : 'text-gray-700'}`}
-                                onClick={() => setOemOpen(false)}
-                              >
-                                Neat
-                              </Link>
-
-                            </div>
-                          )}
-                        </div>
+                          Create Demo Kit
+                        </Link>
                       )}
                     </div>
                   );
@@ -575,24 +545,7 @@ export default function Header() {
                             Logitech Dashboard
                           </Link>
                         )}
-                        {['Admin', 'Poly Super Subscriber', 'Program Manager'].includes(userRole as string) && (
-                          <Link
-                            href="/360dashboard-poly"
-                            className={`flex items-center gap-2.5 px-4 py-1.5 text-[13px] hover:bg-gray-50 transition-colors ${pathname === '/360dashboard-poly' ? 'text-[#112F45] font-medium' : 'text-gray-800'}`}
-                            onClick={() => setAccountOpen(false)}
-                          >
-                            Poly Dashboard
-                          </Link>
-                        )}
-                        {['Admin', 'Neat Super Subscriber', 'Program Manager'].includes(userRole as string) && (
-                          <Link
-                            href="/360dashboard-neat"
-                            className={`flex items-center gap-2.5 px-4 py-1.5 text-[13px] hover:bg-gray-50 transition-colors ${pathname === '/360dashboard-neat' ? 'text-[#112F45] font-medium' : 'text-gray-800'}`}
-                            onClick={() => setAccountOpen(false)}
-                          >
-                            Neat Dashboard
-                          </Link>
-                        )}
+
                         <Link
                           href="/change-password"
                           className={`flex items-center gap-2.5 px-4 py-1.5 text-[13px] hover:bg-gray-50 transition-colors ${pathname === '/change-password' ? 'text-[#112F45] font-medium' : 'text-gray-800'}`}
@@ -827,24 +780,7 @@ export default function Header() {
                             Logitech Dashboard
                           </Link>
                         )}
-                        {['Admin', 'Poly Super Subscriber', 'Program Manager'].includes(userRole as string) && (
-                          <Link
-                            href="/360dashboard-poly"
-                            className={`flex items-center gap-2.5 px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors ${pathname === '/360dashboard-poly' ? 'text-[#112F45] font-semibold' : 'text-gray-700'}`}
-                            onClick={() => setAccountOpen(false)}
-                          >
-                            Poly Dashboard
-                          </Link>
-                        )}
-                        {['Admin', 'Neat Super Subscriber', 'Program Manager'].includes(userRole as string) && (
-                          <Link
-                            href="/360dashboard-neat"
-                            className={`flex items-center gap-2.5 px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors ${pathname === '/360dashboard-neat' ? 'text-[#112F45] font-semibold' : 'text-gray-700'}`}
-                            onClick={() => setAccountOpen(false)}
-                          >
-                            Neat Dashboard
-                          </Link>
-                        )}
+
                         <button
                           onClick={() => {
                             setAccountOpen(false);
@@ -1034,53 +970,16 @@ export default function Header() {
                 );
               })}
 
-              {/* Create Demo Kits Dropdown in Mobile */}
+              {/* Create Demo Kits in Mobile */}
               {userRole !== "Shop Manager" && (
-                <div className="border-b border-gray-100">
-                  <button
-                    onClick={() => setMobileOemOpen(!mobileOemOpen)}
-                    className="flex items-center justify-between w-full text-gray-800 font-medium px-6 py-4 hover:text-blue-600 transition-colors"
-                  >
-                    <span className="text-[15px]">Create Demo Kits</span>
-                    <svg className={`w-4 h-4 text-gray-400 transition-transform ${mobileOemOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  {mobileOemOpen && (
-                    <div className="bg-gray-50/50 pb-2 animate-in fade-in slide-in-from-top-2 duration-200">
-                      <Link
-                        href="/oem/poly"
-                        onClick={() => {
-                          setMobileOpen(false);
-                          setMobileOemOpen(false);
-                        }}
-                        className={`block px-10 py-3 text-[13px] transition-colors ${pathname === '/oem/poly' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
-                      >
-                        Poly
-                      </Link>
-                      <Link
-                        href="/oem/logitech"
-                        onClick={() => {
-                          setMobileOpen(false);
-                          setMobileOemOpen(false);
-                        }}
-                        className={`block px-10 py-3 text-[13px] transition-colors ${pathname === '/oem/logitech' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
-                      >
-                        Logitech
-                      </Link>
-                      <Link
-                        href="/oem/neat"
-                        onClick={() => {
-                          setMobileOpen(false);
-                          setMobileOemOpen(false);
-                        }}
-                        className={`block px-10 py-3 text-[13px] transition-colors ${pathname === '/oem/neat' ? 'text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600'}`}
-                      >
-                        Neat
-                      </Link>
-                    </div>
-                  )}
-                </div>
+                <Link
+                  href="/oem/logitech"
+                  onClick={() => setMobileOpen(false)}
+                  className={`block px-6 py-4 border-b border-gray-100 text-[15px] transition-colors
+                      ${pathname === "/oem/logitech" ? "text-blue-600 font-semibold" : "text-gray-800 hover:text-blue-600"}`}
+                >
+                  Create Demo Kit
+                </Link>
               )}
             </nav>
           </div>

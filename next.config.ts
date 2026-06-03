@@ -13,18 +13,8 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: '/neat',
-        destination: '/oem/neat',
-        permanent: true,
-      },
-      {
         source: '/logitech',
         destination: '/oem/logitech',
-        permanent: true,
-      },
-      {
-        source: '/poly',
-        destination: '/oem/poly',
         permanent: true,
       },
     ];

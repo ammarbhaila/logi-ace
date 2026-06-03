@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
                     <!-- HEADER -->
                     <tr>
                       <td align="center" style="${STYLES.header}">
-                        <img src="cid:logoimg" width="170" alt="SHI UC HUB" style="display:inline-block;">
+                        <img src="cid:logoimg" width="170" alt="Logi-Ace" style="display:inline-block;">
                       </td>
                     </tr>
                     
@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
                     <tr>
                       <td style="${STYLES.content}">
                         <p style="margin-top:0;color:#0f172a;font-size:16px;font-weight:500;">Hello ${esc(profile.first_name)}, </p>
-                        <p>We received a request to reset the password for your SHI UC HUB account. Click the button below to choose a new password:</p>
+                        <p>We received a request to reset the password for your Logi-Ace account. Click the button below to choose a new password:</p>
                         
                         <div style="text-align:center;">
                           <a href="${resetLink}" style="${STYLES.button}">Reset My Password</a>
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
                         
                         <p>This link will expire in 1 hour. If you didn't request this, you can safely ignore this email.</p>
                         
-                        <p style="margin-bottom:0;">Thanks,<br>The SHI Team</p>
+                        <p style="margin-bottom:0;">Thanks,<br>The Logi-Ace Team</p>
                       </td>
                     </tr>
 
@@ -136,14 +136,14 @@ export async function POST(request: NextRequest) {
     });
 
     const FROM_EMAIL = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
-    const FROM_NAME = process.env.SMTP_FROM_NAME || "SHI UC Hub";
+    const FROM_NAME = process.env.SMTP_FROM_NAME || "Logi-Ace";
     const SENDER = `"${FROM_NAME}" <${FROM_EMAIL}>`;
 
     await transporter.sendMail({
       from: SENDER,
       to: email,
       bcc: "ammar@works360.com",
-      subject: "Reset your SHI UC HUB Password",
+      subject: "Reset your Logi-Ace Password",
       html: htmlTemplate,
       attachments: [{ filename: "logo.png", path: logoPath, cid: "logoimg" }],
     });
