@@ -30,13 +30,13 @@ const transporter = nodemailer.createTransport({
 });
 
 const FROM_EMAIL = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
-const FROM_NAME = process.env.SMTP_FROM_NAME || "SHI UC Hub";
+const FROM_NAME = process.env.SMTP_FROM_NAME || "Logi-Ace";
 
 /* ---------------- DOMAIN LOGIC ---------------- */
 
 function isAutoDomain(email: string): boolean {
   const domain = email.split("@")[1]?.toLowerCase();
-  return ["insight.com", "intel.com", "works360.com"].includes(domain);
+  return ["works360.com", "cdwg.com", "cdw.com", "logitech.com"].includes(domain);
 }
 
 /* ---------------- REGISTER ---------------- */
@@ -103,17 +103,17 @@ export async function POST(req: Request) {
         from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
         to: email,
         cc: "ammar@works360.com",
-        subject: "Welcome | SHI UC HUB",
+        subject: "Welcome | Logi-Ace",
         attachments: [{ filename: "logo.png", path: logoPath, cid: "logoimg" }],
         html: `
       <html>
         <body style="margin:0;padding:0;background:#f6f8fb;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
           <table style="width:100%;max-width:650px;margin:24px auto;background:#ffffff;border:1px solid #e8edf3;border-radius:12px;overflow:hidden;border-collapse:collapse;">
-            <tr><td align="center" style="background:#f5f5f5;padding:15px 24px;text-align:center;"><img src="cid:logoimg" width="170" alt="SHI UC HUB" style="display:inline-block;" /></td></tr>
+            <tr><td align="center" style="background:#f5f5f5;padding:15px 24px;text-align:center;"><img src="cid:logoimg" width="170" alt="Logi-Ace" style="display:inline-block;" /></td></tr>
             <tr>
               <td style="padding:22px 24px;border-bottom:1px solid #eef3f7;">
                 <div style="font-size:20px;font-weight:600;color:#0b1f2a;">
-                  Activate Account | SHI UC Hub
+                  Activate Account | Logi-Ace
                 </div>
               </td>
             </tr>
@@ -123,7 +123,7 @@ export async function POST(req: Request) {
                 <p>Hi ${first_name},</p>
 
                 <p>
-                  Thank you for registering with <strong>SHI UC Hub</strong>.
+                  Thank you for registering with <strong>Logi-Ace</strong>.
                 </p>
 
                 <p>
@@ -140,7 +140,7 @@ export async function POST(req: Request) {
                   </a>
                 </p>
 
-                <p>Regards,<br/>SHI UC Hub Team</p>
+                <p>Regards,<br/>Logi-Ace Team</p>
               </td>
             </tr>
           </table>
@@ -157,13 +157,13 @@ export async function POST(req: Request) {
       await transporter.sendMail({
         from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
         to: "ammar@works360.com",
-        subject: "New User Pending Approval | SHI UC Hub",
+        subject: "New User Pending Approval | Logi-Ace",
         attachments: [{ filename: "logo.png", path: logoPath, cid: "logoimg" }],
         html: `
     <html>
       <body style="margin:0;padding:0;background:#f6f8fb;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
         <table style="width:100%;max-width:650px;margin:24px auto;background:#ffffff;border:1px solid #e8edf3;border-radius:12px;overflow:hidden;border-collapse:collapse;">
-          <tr><td align="center" style="background:#f5f5f5;padding:15px 24px;text-align:center;"><img src="cid:logoimg" width="170" alt="SHI UC HUB" style="display:inline-block;" /></td></tr>
+          <tr><td align="center" style="background:#f5f5f5;padding:15px 24px;text-align:center;"><img src="cid:logoimg" width="170" alt="Logi-Ace" style="display:inline-block;" /></td></tr>
           <tr>
             <td style="padding:22px 24px;border-bottom:1px solid #eef3f7;">
               <div style="font-size:20px;font-weight:600;color:#0b1f2a;">
@@ -197,20 +197,20 @@ export async function POST(req: Request) {
 
       // User
       await transporter.sendMail({
-        from: `"SHI UC Hub" <${process.env.SMTP_FROM_EMAIL}>`,
+        from: `"Logi-Ace" <${process.env.SMTP_FROM_EMAIL}>`,
         to: email,
         cc: "ammar@works360.com",
-        subject: "Registration Pending Approval | SHI UC Hub",
+        subject: "Registration Pending Approval | Logi-Ace",
         attachments: [{ filename: "logo.png", path: logoPath, cid: "logoimg" }],
         html: `
     <html>
       <body style="margin:0;padding:0;background:#f6f8fb;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
         <table style="width:100%;max-width:650px;margin:24px auto;background:#ffffff;border:1px solid #e8edf3;border-radius:12px;overflow:hidden;border-collapse:collapse;">
-          <tr><td align="center" style="background:#f5f5f5;padding:15px 24px;text-align:center;"><img src="cid:logoimg" width="170" alt="SHI UC HUB" style="display:inline-block;" /></td></tr>
+          <tr><td align="center" style="background:#f5f5f5;padding:15px 24px;text-align:center;"><img src="cid:logoimg" width="170" alt="Logi-Ace" style="display:inline-block;" /></td></tr>
           <tr>
             <td style="padding:22px 24px;border-bottom:1px solid #eef3f7;">
               <div style="font-size:20px;font-weight:600;color:#0b1f2a;">
-                Registration Received | SHI UC Hub
+                Registration Received | Logi-Ace
               </div>
             </td>
           </tr>
@@ -220,7 +220,7 @@ export async function POST(req: Request) {
               <p>Hi ${first_name},</p>
 
               <p>
-                Thank you for registering with <strong>SHI UC Hub</strong>.
+                Thank you for registering with <strong>Logi-Ace</strong>.
               </p>
 
               <p>
@@ -232,7 +232,7 @@ export async function POST(req: Request) {
                 You will receive an email once your account is approved.
               </p>
 
-              <p>Regards,<br/>SHI UC Hub Team</p>
+              <p>Regards,<br/>Logi-Ace Team</p>
             </td>
           </tr>
         </table>

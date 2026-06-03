@@ -60,7 +60,7 @@ export default function LoginForm() {
 
             const email = profile?.email || "";
             const domain = email.split("@")[1]?.toLowerCase();
-            const isAutoDomain = ["insight.com", "intel.com", "works360.com"].includes(domain);
+            const isAutoDomain = ["works360.com", "cdwg.com", "cdw.com", "logitech.com"].includes(domain);
 
             if (isAutoDomain && profile?.is_verified === false) {
               await supabase.auth.signOut();
