@@ -84,43 +84,35 @@ async function sendOrderConfirmationEmail(orderId: string, formData: any, cartIt
   const teamRows = `
     ${buildRow("Sales Executive", formData.salesExecutive)}
     ${buildRow("Sales Executive Email", formData.salesExecutiveEmail)}
-    ${buildRow("Sales Manager", formData.salesManager)}
-    ${buildRow("Sales Manager Email", formData.salesManagerEmail)}
+    ${buildRow("Account Opportunity Owner Name", formData.accountOpportunityOwner)}
   `;
 
   const shippingRows = `
-    ${buildRow("Company Name", formData.customerCompanyName)}
-    ${buildRow("Receiver name", formData.customerContactName)}
-    ${buildRow("Receiver Email", formData.customerContactEmail)}
-    ${buildRow("Shipping Address", formData.customerShippingAddress)}
+    ${buildRow("Customer Company Name", formData.customerCompanyName)}
+    ${buildRow("Customer Contact Name", formData.customerContactName)}
+    ${buildRow("Customer Contact Email", formData.customerContactEmail)}
+    ${buildRow("Customer Shipping Address", formData.customerShippingAddress)}
     ${buildRow("City", formData.city)}
     ${buildRow("State", formData.state)}
     ${buildRow("Zip", formData.zip)}
   `;
 
   const opportunityRows = `
-    ${buildRow("Device Opportunity Size (Units)", formData.deviceOpportunitySizeUnits)}
+    ${buildRow("Opportunity size (Number of rooms)", formData.deviceOpportunitySizeUnits)}
+    ${buildRow("Has the customer determined a project budget?", formData.projectBudgetDetermined)}
+    ${buildRow("Estimated Budget Amount", formData.estimatedBudgetAmount)}
     ${buildRow("Revenue Opportunity Size ($ Device Rev)", formData.revenueOpportunitySize)}
-    ${(hasLogitech || hasNeat) ? buildRow("How many rooms is the customer looking to upgrade?", formData.roomUpgrade) : ''}
-    ${(hasLogitech || hasNeat) ? buildRow("Approx how many participants expected for each room?", formData.expectedParticipants) : ''}
-    ${hasLogitech ? buildRow("Has a Logitech AE been engaged?", formData.logitechEngaged) : ''}
-    ${hasLogitech ? buildRow("Logitech AE Name (If Logitech AE Engaged)", formData.engagedAENAME) : ''}
-    ${hasLogitech ? buildRow("Does your customer need technical support for setup?", formData.technicalSupport) : ''}
-    ${hasNeat ? buildRow("Does your customer need virtual support for setup?", formData.virtualSupport) : ''}
-    ${hasPoly || hasLogitech ? buildRow("Approved Deal Reg ?", formData.approvedDealReg) : ''}
-    ${hasPoly ? buildRow("If so, do you have the in-house expertise to do so?", formData.inHouseExpertise) : ''}
-    ${hasPoly ? buildRow("Does your customer need a technical resource to demo this equipment?", formData.technicalResource) : ''}
-    ${hasPoly ? buildRow("What version is your customer planning to use?", formData.customerPlanningVersion) : ''}
-    ${hasPoly || hasLogitech ? buildRow("reg_no", formData.regNumber) : ''}
-    ${hasNeat || hasLogitech ? buildRow("primary_platform", formData.platform) : ''}
-    <tr>
-      <td style="${STYLES.rowLabel}">Opportunity Link (URL)</td>
-      <td style="${STYLES.rowValue}"><a href="${formData.opportunityLink}" style="color:${STYLES.linkBlue};text-decoration:none;">Click for Link</a></td>
-    </tr>
-    ${buildRow("CRM Account #", formData.crmAccount)}
-    ${buildRow("Segment", formData.segment)}
+    ${buildRow("Is your customer evaluating any other collaboration solutions?", formData.evaluatingOtherSolutions)}
+    ${formData.evaluatingOtherSolutions === 'Yes' ? buildRow("If yes, provide competitive vendor", formData.competitiveVendor) : ''}
+    ${buildRow("Has a Logitech AE been engaged?", formData.logitechEngaged)}
+    ${formData.logitechEngaged === 'Yes' ? buildRow("Logitech AE Name (If Logitech AE Engaged)", formData.engagedAENAME) : ''}
+    ${buildRow("Approved Deal Reg", formData.approvedDealReg)}
+    ${buildRow("Reg #", formData.regNumber)}
+    ${buildRow("Is this a Staged Roll out?", formData.stagedRollOut)}
+    ${buildRow("SPS Account #", formData.spsAccountNumber)}
+    ${buildRow("Desired Demo Delivery Date", formData.desiredDemoDeliveryDate)}
     ${buildRow("Estimated Closed Date", formData.estimatedClosedDate)}
-    ${buildRow("Note", formData.notes)}
+    ${buildRow("Notes", formData.notes)}
   `;
 
   // --- USER HTML TEMPLATE BUILDER ---
@@ -134,13 +126,13 @@ async function sendOrderConfirmationEmail(orderId: string, formData: any, cartIt
               <table width="650" style="${STYLES.container}" cellpadding="0" cellspacing="0">
                 
                 <!-- HEADER -->
-                <tr><td align="center" style="${STYLES.header} text-align:center;"><img src="cid:logoimg" width="170" alt="SHI UC HUB" style="display:inline-block;"></td></tr>
+                <tr><td align="center" style="${STYLES.header} text-align:center;"><img src="cid:logoimg" width="170" alt="Logi-ACE (CDW)" style="display:inline-block;"></td></tr>
                 
                 <!-- TITLE & DATE -->
                 <tr>
                   <td style="padding:22px 24px;border-bottom:1px solid #eef3f7;">
                     <div style="font-size:20px;font-weight:600;color:#0b1f2a;">
-                      New SHI UC HUB Order (#${orderId})
+                      New Logi-ACE (CDW) Order (#${orderId})
                     </div>
                     <div style="font-size:12px;color:#6b7b86;margin-top:6px;">Placed On ${placedOn}</div>
                   </td>
@@ -157,7 +149,7 @@ async function sendOrderConfirmationEmail(orderId: string, formData: any, cartIt
                 <tr>
                   <td style="padding:22px 24px;font-size:14px;color:#334b59;line-height:20px;">
                     Hello ${esc(formData.salesExecutive)},<br><br>
-                    Thank you for your order from SHI UC HUB. Once your order is approved, you will receive a confirmation email after which it will be shipped to your customer, If you have any questions please contact us at <a href="mailto:support@shiuchub.com" style="color:${STYLES.linkBlue};text-decoration:none;">support@shiuchub.com</a>.<br><br>
+                    Thank you for your order from Logi-ACE (CDW). Once your order is approved, you will receive a confirmation email after which it will be shipped to your customer, If you have any questions please contact us at <a href="mailto:support@logi-ace.com" style="color:${STYLES.linkBlue};text-decoration:none;">support@logi-ace.com</a>.<br><br>
                   </td>
                 </tr>
 
@@ -233,13 +225,13 @@ async function sendOrderConfirmationEmail(orderId: string, formData: any, cartIt
               <table width="650" style="${STYLES.container}" cellpadding="0" cellspacing="0">
                 
                 <!-- HEADER -->
-                <tr><td align="center" style="${STYLES.header} text-align:center;"><img src="cid:logoimg" width="170" alt="SHI UC HUB" style="display:inline-block;"></td></tr>
+                <tr><td align="center" style="${STYLES.header} text-align:center;"><img src="cid:logoimg" width="170" alt="Logi-ACE (CDW)" style="display:inline-block;"></td></tr>
                 
                 <!-- TITLE & DATE -->
                 <tr>
                   <td style="padding:22px 24px;border-bottom:1px solid #eef3f7;">
                     <div style="font-size:20px;font-weight:600;color:#0b1f2a;">
-                      New SHI UC HUB Order (#${orderId})
+                      New Logi-ACE (CDW) Order (#${orderId})
                     </div>
                     <div style="font-size:12px;color:#6b7b86;margin-top:6px;">Placed On ${placedOn}</div>
                   </td>
@@ -256,7 +248,7 @@ async function sendOrderConfirmationEmail(orderId: string, formData: any, cartIt
                 <tr>
                   <td style="padding:22px 24px;font-size:14px;color:#334b59;line-height:20px;">
                     Hello Team,<br><br>
-                    You have received a new order from <a href="http://shiuchub.com" style="font-weight:500;color:${STYLES.linkBlue};text-decoration:none;">shiuchub.com</a>. Please click below to Review and Approve/Reject.
+                    You have received a new order from <a href="http://logi-ace.com" style="font-weight:500;color:${STYLES.linkBlue};text-decoration:none;">logi-ace.com</a>. Please click below to Review and Approve/Reject.
                     <div style="text-align:center;padding:20px 0;">
                       <a href="${process.env.NEXT_PUBLIC_SITE_URL}/orders/${orderId}" style="display:inline-block;background-color:#c65326;color:#ffffff;padding:12px 20px;border-radius:4px;text-decoration:none;font-weight:500;font-size:18px;">View Order</a>
                     </div>
@@ -337,7 +329,7 @@ async function sendOrderConfirmationEmail(orderId: string, formData: any, cartIt
   });
 
   const FROM_EMAIL = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
-  const FROM_NAME = process.env.SMTP_FROM_NAME || "SHI UC Hub";
+  const FROM_NAME = process.env.SMTP_FROM_NAME || "Logi-ACE (CDW)";
   const SENDER = `"${FROM_NAME}" <${FROM_EMAIL}>`;
 
   // 0. Build Subject with OEM Brackets (Separate from Recipient Logic)
@@ -358,7 +350,7 @@ async function sendOrderConfirmationEmail(orderId: string, formData: any, cartIt
     .map(oem => `(${displayNames[oem] || oem})`)
     .join(' ');
 
-  const subject = `New Order (#${orderId}) | SHI UC HUB${oemBrackets ? ' ' + oemBrackets : ''}`;
+  const subject = `New Order (#${orderId}) | Logi-ACE (CDW)${oemBrackets ? ' ' + oemBrackets : ''}`;
 
   // 1. Send USER email
   // User template -> Sales Executive + Support

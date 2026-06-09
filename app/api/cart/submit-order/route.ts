@@ -14,11 +14,13 @@ export async function POST(request: NextRequest) {
 
     // Convert form data to ensure proper text values ("Yes" or "No")
     const approvedDealReg = formData.approvedDealReg === 'Yes' ? 'Yes' : 'No';
-    const inHouseExpertise = formData.inHouseExpertise === 'Yes' ? 'Yes' : 'No';
-    const technicalResource = formData.technicalResource === 'Yes' ? 'Yes' : 'No';
+    const evaluatingOtherSolutions = formData.evaluatingOtherSolutions === 'Yes' ? 'Yes' : 'No';
+    const projectBudgetDetermined = formData.projectBudgetDetermined === 'Yes' ? 'Yes' : 'No';
     const logitechEngaged = formData.logitechEngaged === 'Yes' ? 'Yes' : 'No';
-    const virtualSupport = formData.virtualSupport === 'Yes' ? 'Yes' : 'No';
-    const technicalSupport = formData.technicalSupport === 'Yes' ? 'Yes' : 'No';
+    const stagedRollOut = formData.stagedRollOut === 'Yes' ? 'Yes' : 'No';
+
+    const deviceOpportunitySizeUnits = formData.deviceOpportunitySizeUnits ? parseInt(formData.deviceOpportunitySizeUnits, 10) : null;
+    const revenueOpportunitySize = formData.revenueOpportunitySize ? parseFloat(formData.revenueOpportunitySize) : null;
 
     // Insert into checkout_requests table (id is now serial)
     const { data: checkoutData, error: checkoutError } = await supabaseAdmin
@@ -26,8 +28,7 @@ export async function POST(request: NextRequest) {
       .insert([{
         sales_executive: formData.salesExecutive,
         sales_executive_email: formData.salesExecutiveEmail,
-        sales_manager: formData.salesManager,
-        sales_manager_email: formData.salesManagerEmail,
+        account_opportunity_owner: formData.accountOpportunityOwner,
         customer_company_name: formData.customerCompanyName,
         customer_contact_name: formData.customerContactName,
         customer_contact_email: formData.customerContactEmail,
@@ -35,27 +36,23 @@ export async function POST(request: NextRequest) {
         city: formData.city,
         state: formData.state,
         zip: formData.zip,
-        device_opportunity_size_units: formData.deviceOpportunitySizeUnits,
-        revenue_opportunity_size: formData.revenueOpportunitySize,
-        crm_account_number: formData.crmAccount,
-        segment: formData.segment,
-        estimated_closed_date: formData.estimatedClosedDate,
-        opportunity_link: formData.opportunityLink,
-        notes: formData.notes,
-        approved_deal_reg: approvedDealReg, // Now it's 'Yes'/'No' instead of boolean
-        reg_number: formData.regNumber || '', // Handle null or empty case
-        platform: formData.platform || '', // Handle null or empty case
-        customer_planning_version: formData.customerPlanningVersion || '',
-        in_house_expertise: inHouseExpertise, // 'Yes'/'No' text value
-        technical_resource: technicalResource, // 'Yes'/'No' text value
-        room_upgrade: formData.roomUpgrade || '', // Default to 'No' if missing
-        expected_participants: formData.expectedParticipants || 0, // Default to 0 if missing
-        technical_support: technicalSupport, // 'Yes'/'No' text value
-        logitech_engaged: logitechEngaged, // 'Yes'/'No' text value
+        device_opportunity_size_units: deviceOpportunitySizeUnits,
+        revenue_opportunity_size: revenueOpportunitySize,
+        sps_account_number: formData.spsAccountNumber,
+        estimated_closed_date: formData.estimatedClosedDate || null,
+        competitive_vendor: formData.competitiveVendor || '',
+        notes: formData.notes || '',
+        approved_deal_reg: approvedDealReg,
+        reg_number: formData.regNumber || '',
+        desired_demo_delivery_date: formData.desiredDemoDeliveryDate || '',
+        evaluating_other_solutions: evaluatingOtherSolutions,
+        project_budget_determined: projectBudgetDetermined,
+        staged_roll_out: stagedRollOut,
+        estimated_budget_amount: formData.estimatedBudgetAmount || '',
+        logitech_engaged: logitechEngaged,
         engaged_ae_name: formData.engagedAENAME || '',
-        virtual_support: virtualSupport, // 'Yes'/'No' text value
         created_at: new Date().toISOString(),
-        order_status: 'Awaiting Approval', // Default status if not passed
+        order_status: 'Awaiting Approval',
       }])
       .select('id')
       .single();

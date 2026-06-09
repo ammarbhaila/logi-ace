@@ -37,13 +37,12 @@ export function HeroSlider() {
             /> */}
 
             <h1 className="text-xl font-bold text-black leading-tight ">
-              UC Room Solutions
-              Demo Kits
+              Deliver Amazing Customer Experiences Together
 
             </h1>
 
             <p className="text-sm text-gray-600 mt-3">
-              Browse room solutions to create and send demo-kits in just a few simple steps. Logi-Ace has been developed to provide sales executives the unique opportunity to order demo-kits for their most valued customers. Checkout easy-to-use, high quality conferencing solutions for all room sizes in just a few simple steps and have them in your customer’s hands within days!
+              The Logi-ACE program enables CDW sellers and SAs to quickly deliver Logitech video collaboration demo kits with white-glove service, helping create exceptional customer experiences and accelerate deal closures.
             </p>
 
             {/* <button
@@ -68,11 +67,11 @@ export function HeroSlider() {
           <div className="relative z-10 flex flex-col justify-center h-full px-16 max-w-4xl -translate-y-2">
 
             <h1 className="lg:text-3xl xl:text-4xl 2xl:text-4xl font-medium text-black leading-tight lg:max-w-[550px] xl:max-w-[550px] 2xl:max-w-[600px]">
-              UC Room Solutions Demo Kits
+              Deliver Amazing Customer Experiences Together
             </h1>
 
             <p className="text-black font-normal text-lg lg:text-[13px] xl:text-[16px] 2xl:text-[18px] text-gray-800 mt-4 lg:max-w-[450px] xl:max-w-[560px] 2xl:max-w-[650px]">
-              Browse room solutions to create and send demo-kits in just a few simple steps. Logi-Ace has been developed to provide sales executives the unique opportunity to order demo-kits for their most valued customers. Checkout easy-to-use, high quality conferencing solutions for all room sizes in just a few simple steps and have them in your customer’s hands within days!
+              The Logi-ACE program enables CDW sellers and SAs to quickly deliver Logitech video collaboration demo kits with white-glove service, helping create exceptional customer experiences and accelerate deal closures.
             </p>
 
 

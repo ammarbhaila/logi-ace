@@ -87,43 +87,35 @@ async function sendOrderStatusEmail(
   const teamRows = `
     ${buildRow('Sales Executive', orderData.sales_executive)}
     ${buildRow('Sales Executive Email', orderData.sales_executive_email)}
-    ${buildRow('Sales Manager', orderData.sales_manager)}
-    ${buildRow('Sales Manager Email', orderData.sales_manager_email)}
+    ${buildRow('Account Opportunity Owner Name', orderData.sales_manager)}
   `;
 
   const shippingRows = `
-    ${buildRow('Company Name', orderData.customer_company_name)}
-    ${buildRow('Receiver Name', orderData.customer_contact_name)}
-    ${buildRow('Receiver Email', orderData.customer_contact_email)}
-    ${buildRow('Shipping Address', orderData.customer_shipping_address)}
+    ${buildRow('Customer Company Name', orderData.customer_company_name)}
+    ${buildRow('Customer Contact Name', orderData.customer_contact_name)}
+    ${buildRow('Customer Contact Email', orderData.customer_contact_email)}
+    ${buildRow('Customer Shipping Address', orderData.customer_shipping_address)}
     ${buildRow('City', orderData.city)}
     ${buildRow('State', orderData.state)}
     ${buildRow('Zip', orderData.zip)}
   `;
 
   const opportunityRows = `
-    ${buildRow('Device Opportunity Size (Units)', orderData.device_opportunity_size_units)}
+    ${buildRow('Opportunity size (Number of rooms)', orderData.device_opportunity_size_units)}
+    ${buildRow('Has the customer determined a project budget?', orderData.technical_resource)}
+    ${buildRow('Estimated Budget Amount', orderData.expected_participants)}
     ${buildRow('Revenue Opportunity Size ($ Device Rev)', orderData.revenue_opportunity_size)}
-    ${(hasLogitech || hasNeat) ? buildRow('How many rooms is the customer looking to upgrade?', orderData.room_upgrade) : ''}
-    ${(hasLogitech || hasNeat) ? buildRow('Approx how many participants expected for each room?', orderData.expected_participants) : ''}
-    ${hasLogitech ? buildRow('Has a Logitech AE been engaged?', orderData.logitech_engaged) : ''}
-    ${hasLogitech ? buildRow('Logitech AE Name (If Logitech AE Engaged)', orderData.engaged_ae_name) : ''}
-    ${hasLogitech ? buildRow('Does your customer need technical support for setup?', orderData.technical_support) : ''}
-    ${hasNeat ? buildRow('Does your customer need virtual support for setup?', orderData.virtual_support) : ''}
-    ${hasPoly || hasLogitech ? buildRow('Approved Deal Reg ?', orderData.approved_deal_reg) : ''}
-    ${hasPoly ? buildRow('If so, do you have the in-house expertise to do so?', orderData.in_house_expertise) : ''}
-    ${hasPoly ? buildRow('Does your customer need a technical resource to demo this equipment?', orderData.technical_resource) : ''}
-    ${hasPoly ? buildRow('What version is your customer planning to use?', orderData.customer_planning_version) : ''}
-    ${hasPoly || hasLogitech ? buildRow('reg_no', orderData.reg_number) : ''}
-    ${hasNeat || hasLogitech ? buildRow('primary_platform', orderData.platform) : ''}
-    <tr>
-      <td style="${STYLES.rowLabel}">Opportunity Link (URL)</td>
-      <td style="${STYLES.rowValue}"><a href="${orderData.opportunity_link}" style="color:${STYLES.linkBlue};text-decoration:none;">Click for Link</a></td>
-    </tr>
-    ${buildRow('CRM Account #', orderData.crm_account_number)}
-    ${buildRow('Segment', orderData.segment)}
+    ${buildRow('Is your customer evaluating any other collaboration solutions?', orderData.in_house_expertise)}
+    ${orderData.in_house_expertise === 'Yes' ? buildRow('If yes, provide competitive vendor', orderData.opportunity_link) : ''}
+    ${buildRow('Has a Logitech AE been engaged?', orderData.logitech_engaged)}
+    ${orderData.logitech_engaged === 'Yes' ? buildRow('Logitech AE Name (If Logitech AE Engaged)', orderData.engaged_ae_name) : ''}
+    ${buildRow('Approved Deal Reg', orderData.approved_deal_reg)}
+    ${buildRow('Reg #', orderData.reg_number)}
+    ${buildRow('Is this a Staged Roll out?', orderData.room_upgrade)}
+    ${buildRow('SPS Account #', orderData.crm_account_number)}
+    ${buildRow('Desired Demo Delivery Date', orderData.customer_planning_version)}
     ${buildRow('Estimated Closed Date', orderData.estimated_closed_date)}
-    ${buildRow('Note', orderData.notes)}
+    ${buildRow('Notes', orderData.notes)}
   `;
 
   // Status badge config
@@ -143,7 +135,7 @@ async function sendOrderStatusEmail(
               <table width="650" style="${STYLES.container}" cellpadding="0" cellspacing="0">
 
                 <!-- HEADER -->
-                <tr><td align="center" style="${STYLES.header} text-align:center;"><img src="cid:logoimg" width="170" alt="SHI UC HUB" style="display:inline-block;"></td></tr>
+                <tr><td align="center" style="${STYLES.header} text-align:center;"><img src="cid:logoimg" width="170" alt="Logi-ace" style="display:inline-block;"></td></tr>
 
                 <!-- LABEL & DATE -->
                 <tr>
@@ -171,10 +163,10 @@ async function sendOrderStatusEmail(
                   <td style="padding:22px 24px;font-size:14px;color:#334b59;line-height:20px;">
                     Hello ${esc(orderData.sales_executive)},<br><br>
                     ${isApproved
-      ? `Your order on <a href="http://shiuchub.com" style="font-weight:500;color:${STYLES.linkBlue};text-decoration:none;">www.shiuchub.com</a> has been approved. Once your package ships, you will receive a shipping email with tracking information and a prepaid  Return Label for your order.<br><br>
-                           If you have any questions please contact us at <a href="mailto:support@shiuchub.com" style="color:${STYLES.linkBlue};">support@shiuchub.com</a>.`
-      : `We regret to inform you that your order request <strong>#${orderId}</strong> on <a href="http://shiuchub.com" style="font-weight:700;color:${STYLES.linkBlue};text-decoration:none;">www.shiuchub.com</a> has been <strong>rejected</strong>.<br><br>
-                           If you have any questions please contact us at <a href="mailto:support@shiuchub.com" style="color:${STYLES.linkBlue};">support@shiuchub.com</a>.`}
+      ? `Your order on <a href="http://localhost:3000" style="font-weight:500;color:${STYLES.linkBlue};text-decoration:none;">www.logi-ace.com</a> has been approved. Once your package ships, you will receive a shipping email with tracking information and a prepaid  Return Label for your order.<br><br>
+                           If you have any questions please contact us at <a href="mailto:support@logi-ace.com" style="color:${STYLES.linkBlue};">support@logi-ace.com</a>.`
+      : `We regret to inform you that your order request <strong>#${orderId}</strong> on <a href="http://localhost:3000" style="font-weight:700;color:${STYLES.linkBlue};text-decoration:none;">www.logi-ace.com</a> has been <strong>rejected</strong>.<br><br>
+                           If you have any questions please contact us at <a href="mailto:support@logi-ace.com" style="color:${STYLES.linkBlue};">support@logi-ace.com</a>.`}
                   </td>
                 </tr>
 
@@ -252,7 +244,7 @@ async function sendOrderStatusEmail(
   });
 
   const FROM_EMAIL = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
-  const FROM_NAME = process.env.SMTP_FROM_NAME || "SHI UC Hub";
+  const FROM_NAME = process.env.SMTP_FROM_NAME || "Logi-ACE";
   const SENDER = `"${FROM_NAME}" <${FROM_EMAIL}>`;
 
   // 0. Build Subject with OEM Brackets (Separate from Recipient Logic)
@@ -274,8 +266,8 @@ async function sendOrderStatusEmail(
     .join(' ');
 
   const subject = isApproved
-    ? `Order Approved (#${orderId}) | SHI UC HUB${oemBrackets ? ' ' + oemBrackets : ''}`
-    : `Order Rejected (#${orderId}) | SHI UC HUB${oemBrackets ? ' ' + oemBrackets : ''}`;
+    ? `Order Approved (#${orderId}) | Logi-ACE (CDW)${oemBrackets ? ' ' + oemBrackets : ''}`
+    : `Order Rejected (#${orderId}) | Logi-ACE (CDW)${oemBrackets ? ' ' + oemBrackets : ''}`;
 
   // 3. Define OEM recipients (Only for Approval)
   const recipientsSet = new Set<string>();

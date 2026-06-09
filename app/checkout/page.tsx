@@ -11,11 +11,12 @@ export default function CheckoutPage() {
   const router = useRouter();
 
   const [session, setSession] = useState<any>(null); // Store session info
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [formData, setFormData] = useState({
     // Team Details (Common for all)
     salesExecutive: '',
     salesExecutiveEmail: '',
-    salesManager: '',
+    accountOpportunityOwner: '',
     salesManagerEmail: '',
 
     // Shipping Details (Common for all)
@@ -30,25 +31,25 @@ export default function CheckoutPage() {
     // Opportunity Details (Common for all)
     deviceOpportunitySizeUnits: '',
     revenueOpportunitySize: '',
-    crmAccount: '',
+    spsAccountNumber: '',
     segment: '',
     estimatedClosedDate: '',
-    opportunityLink: '',
+    competitiveVendor: '',
     notes: '',
 
-    // Device-Specific (Poly, Logitech, Neat)
-    approvedDealReg: '',   //logitech, poly
-    regNumber: '',         //logitech, poly
-    platform: '',       //logitech,neat   
-    customerPlanningVersion: '',  //poly
-    inHouseExpertise: '', //poly
-    technicalResource: '', //poly
-    roomUpgrade: '',  //neat,logitech
-    expectedParticipants: '',  //neat,logitech
-    technicalSupport: '', //logitech
-    logitechEngaged: '', //logitech
-    engagedAENAME: '', //logitech
-    virtualSupport: '', //neat
+    // Device-Specific / Unified mapping
+    approvedDealReg: '',
+    regNumber: '',
+    platform: '',
+    desiredDemoDeliveryDate: '',
+    evaluatingOtherSolutions: '',
+    projectBudgetDetermined: '',
+    stagedRollOut: '',
+    estimatedBudgetAmount: '',
+    technicalSupport: '',
+    logitechEngaged: '',
+    engagedAENAME: '',
+    virtualSupport: '',
   });
 
   useEffect(() => {
@@ -95,13 +96,29 @@ export default function CheckoutPage() {
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => {
+      const updated = { ...prev, [name]: value };
+      // If evaluating is set to No, clear competitive vendor
+      if (name === 'evaluatingOtherSolutions' && value !== 'Yes') {
+        updated.competitiveVendor = '';
+      }
+      // If Logitech AE engaged is set to No, clear AE Name
+      if (name === 'logitechEngaged' && value !== 'Yes') {
+        updated.engagedAENAME = '';
+      }
+      return updated;
+    });
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (items.length === 0) {
       alert('Your cart is empty. Please add products before placing an order.');
+      return;
+    }
+
+    if (!termsAccepted) {
+      alert('You must read and agree to the website terms and conditions to place an order.');
       return;
     }
 
@@ -153,52 +170,39 @@ export default function CheckoutPage() {
     }
   };
 
-
-
-  // Render Opportunity Details Based on OEM Type
+  // Render Unified Opportunity Details
   const renderOpportunityDetails = () => {
     return (
       <>
-        {/* Common Opportunity Details for all OEMs */}
+        {/* Row 1 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Device Opportunity Size (Units) <span className="text-red-500">*</span>
+            Opportunity size (Number of rooms) <span className="text-red-500">*</span>
           </label>
-          <input
-            type="number"
+          <select
             name="deviceOpportunitySizeUnits"
             value={formData.deviceOpportunitySizeUnits}
             onChange={handleInputChange}
-            placeholder=""
             required
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[14px]"
-          />
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
+          >
+            <option value=""></option>
+            {[...Array(20).keys()].map((n) => (
+              <option key={n + 1} value={n + 1}>
+                {n + 1}
+              </option>
+            ))}
+            <option value="20+">20+</option>
+          </select>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Revenue Opportunity Size <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="number"
-            name="revenueOpportunitySize"
-            value={formData.revenueOpportunitySize}
-            onChange={handleInputChange}
-            placeholder=""
-            required
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[14px]"
-          />
-        </div>
-
-
-        {/* Conditional fields based on OEM Type */}
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Does your customer need a technical resource to demo this equipment? <span className="text-red-500">*</span>
+            Has the customer determined a project budget? <span className="text-red-500">*</span>
           </label>
           <select
-            name="technicalResource"
-            value={formData.technicalResource}
+            name="projectBudgetDetermined"
+            value={formData.projectBudgetDetermined}
             onChange={handleInputChange}
             required
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
@@ -208,181 +212,99 @@ export default function CheckoutPage() {
             <option value="No">No</option>
           </select>
         </div>
-        {items.some(item => item.oem?.toLowerCase() === 'poly') && (
-          <>
-            <div>
+
+        {/* Row 2 */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Estimated Budget Amount <span className="text-red-500">*</span>
+          </label>
+          <select
+            name="estimatedBudgetAmount"
+            value={formData.estimatedBudgetAmount}
+            onChange={handleInputChange}
+            required
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
+          >
+            <option value=""></option>
+            <option value="Under $10,000">Under $10,000</option>
+            <option value="$10,000 - $50,000">$10,000 - $50,000</option>
+            <option value="$50,000 - $100,000">$50,000 - $100,000</option>
+            <option value="$100,000 - $250,000">$100,000 - $250,000</option>
+            <option value="$250,000+">$250,000+</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Revenue Opportunity Size ($ Device Rev) <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="number"
+            name="revenueOpportunitySize"
+            value={formData.revenueOpportunitySize}
+            onChange={handleInputChange}
+            required
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[14px]"
+          />
+        </div>
+
+        {/* Row 3 */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Is your customer evaluating any other collaboration solutions? <span className="text-red-500">*</span>
+          </label>
+          <select
+            name="evaluatingOtherSolutions"
+            value={formData.evaluatingOtherSolutions}
+            onChange={handleInputChange}
+            required
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
+          >
+            <option value=""></option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+
+        <div>
+          {formData.evaluatingOtherSolutions === 'Yes' && (
+            <>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                If so, do you have the in-house expertise to do so? <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="inHouseExpertise"
-                value={formData.inHouseExpertise}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
-              >
-                <option value=""></option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                What version is your customer planning to use? <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="customerPlanningVersion"
-                value={formData.customerPlanningVersion}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
-              >
-                <option value=""></option>
-                <option value="Zoom Mode">Zoom Mode</option>
-                <option value="Teams Mode">Teams Mode</option>
-                <option value="Poly Mode">Poly Mode</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Approved Deal Reg <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="approvedDealReg"
-                value={formData.approvedDealReg}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
-              >
-                <option value=""></option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Reg # <span className="text-red-500">*</span>
+                If yes, provide competitive vendor <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                name="regNumber"
-                value={formData.regNumber}
+                name="competitiveVendor"
+                value={formData.competitiveVendor}
                 onChange={handleInputChange}
-                placeholder=""
-                required
+                required={formData.evaluatingOtherSolutions === 'Yes'}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[14px]"
               />
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
 
-        {items.some(item => item.oem?.toLowerCase() === 'logitech') && (
-          <>
+        {/* Row 4 */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Has a Logitech AE been engaged? <span className="text-red-500">*</span>
+          </label>
+          <select
+            name="logitechEngaged"
+            value={formData.logitechEngaged}
+            onChange={handleInputChange}
+            required
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
+          >
+            <option value=""></option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Approved Deal Reg <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="approvedDealReg"
-                value={formData.approvedDealReg}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
-              >
-                <option value=""></option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Reg # <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                name="regNumber"
-                value={formData.regNumber}
-                onChange={handleInputChange}
-                placeholder=""
-                required
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[14px]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                How many rooms is the customer looking to upgrade? <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="roomUpgrade"
-                value={formData.roomUpgrade}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
-              >
-                <option value=""></option>
-                {[...Array(10).keys()].map((n) => (
-                  <option key={n + 1} value={n + 1}>
-                    {n + 1}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                How many participants expected for each room? <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="expectedParticipants"
-                value={formData.expectedParticipants}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
-              >
-                <option value=""></option>
-                <option value="1-2">1-2</option>
-                <option value="2-4">2-4</option>
-                <option value="4-8">4-8</option>
-                <option value="8-12">8-12</option>
-                <option value="12-20">12-20</option>
-                <option value="20-46">20-46</option>
-                <option value="46+">46+</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Does your customer need technical support for setup? <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="technicalSupport"
-                value={formData.technicalSupport}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
-              >
-                <option value=""></option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Has a Logitech AE been engaged? <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="logitechEngaged"
-                value={formData.logitechEngaged}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
-              >
-                <option value=""></option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-            <div>
+        <div>
+          {formData.logitechEngaged === 'Yes' && (
+            <>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Logitech AE Name (If Logitech AE Engaged) <span className="text-red-500">*</span>
               </label>
@@ -391,151 +313,95 @@ export default function CheckoutPage() {
                 name="engagedAENAME"
                 value={formData.engagedAENAME}
                 onChange={handleInputChange}
-                placeholder=""
-                required
+                required={formData.logitechEngaged === 'Yes'}
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[14px]"
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Primary Platform <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="platform"
-                value={formData.platform}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
-              >
-                <option value=""></option>
-                <option value="Microsoft Teams">Microsoft Teams</option>
-                <option value="Zoom">Zoom</option>
-                <option value="Google">Google</option>
-              </select>
-            </div>
-
-          </>
-        )}
-
-        {items.some(item => item.oem?.toLowerCase() === 'neat') && (
-          <>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                How many rooms is the customer looking to upgrade? <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="roomUpgrade"
-                value={formData.roomUpgrade}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
-              >
-                <option value="">Select number of rooms</option>
-                {[...Array(10).keys()].map((n) => (
-                  <option key={n + 1} value={n + 1}>
-                    {n + 1}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                How many participants expected for each room? <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="expectedParticipants"
-                value={formData.expectedParticipants}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
-              >
-                <option value="">Select expected participants</option>
-                <option value="1-2">1-2</option>
-                <option value="2-4">2-4</option>
-                <option value="4-8">4-8</option>
-                <option value="8-12">8-12</option>
-                <option value="12-20">12-20</option>
-                <option value="20-46">20-46</option>
-                <option value="46+">46+</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Does your customer need virtual support for setup? <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="virtualSupport"
-                value={formData.virtualSupport}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
-              >
-                <option value="">Select</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Which platform is your customer planning to use? <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="platform"
-                value={formData.platform}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
-              >
-                <option value="">Select Platform</option>
-                <option value="Microsoft Teams">Microsoft Teams</option>
-                <option value="Zoom">Zoom</option>
-              </select>
-            </div>
-          </>
-        )}
-
-
-        {/* Add the 5 fields for CRM Account #, Segment, Estimated Close Date, Opportunity Link, and Notes */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            CRM Account # <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            name="crmAccount"
-            value={formData.crmAccount}
-            onChange={handleInputChange}
-            placeholder=""
-            required
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[14px]"
-          />
+            </>
+          )}
         </div>
+
+        {/* Row 5 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Segment <span className="text-red-500">*</span>
+            Approved Deal Reg <span className="text-red-500">*</span>
           </label>
           <select
-            name="segment"
-            value={formData.segment}
+            name="approvedDealReg"
+            value={formData.approvedDealReg}
             onChange={handleInputChange}
             required
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
           >
             <option value=""></option>
-            <option value="Global">Global</option>
-            <option value="Strategic/Stratascale">Strategic/Stratascale</option>
-            <option value="Enterprise">Enterprise</option>
-            <option value="Commercial">Commercial</option>
-            <option value="Public Sector Field">Public Sector Field</option>
-            <option value="Federal">Federal</option>
-            <option value="Public Sector Inside">Public Sector Inside</option>
-            <option value="Federal/Healthcare">Federal/Healthcare</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
           </select>
         </div>
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Estimated Close Date <span className="text-red-500">*</span>
+            Reg # <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            name="regNumber"
+            value={formData.regNumber}
+            onChange={handleInputChange}
+            required
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[14px]"
+          />
+        </div>
+
+        {/* Row 6 */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Is this a Staged Roll out? <span className="text-red-500">*</span>
+          </label>
+          <select
+            name="stagedRollOut"
+            value={formData.stagedRollOut}
+            onChange={handleInputChange}
+            required
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
+          >
+            <option value=""></option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            SPS Account # <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            name="spsAccountNumber"
+            value={formData.spsAccountNumber}
+            onChange={handleInputChange}
+            required
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[14px]"
+          />
+        </div>
+
+        {/* Row 7 */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Desired Demo Delivery Date <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="date"
+            name="desiredDemoDeliveryDate"
+            value={formData.desiredDemoDeliveryDate}
+            onChange={handleInputChange}
+            required
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[14px]"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Estimated Closed Date <span className="text-red-500">*</span>
           </label>
           <input
             type="date"
@@ -547,20 +413,8 @@ export default function CheckoutPage() {
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[14px]"
           />
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Opportunity Link (URL) <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            name="opportunityLink"
-            value={formData.opportunityLink}
-            onChange={handleInputChange}
-            // placeholder="e.g. www.google.com"
-            required
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-[14px]"
-          />
-        </div>
+
+        {/* Row 8 */}
         <div className="col-span-1 md:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Notes
@@ -620,26 +474,12 @@ export default function CheckoutPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Sales Manager <span className="text-red-500">*</span>
+                Account Opportunity Owner Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                name="salesManager"
-                value={formData.salesManager}
-                onChange={handleInputChange}
-                placeholder=""
-                required
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px]"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Sales Manager Email <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="email"
-                name="salesManagerEmail"
-                value={formData.salesManagerEmail}
+                name="accountOpportunityOwner"
+                value={formData.accountOpportunityOwner}
                 onChange={handleInputChange}
                 placeholder=""
                 required
@@ -657,7 +497,7 @@ export default function CheckoutPage() {
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50/30">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Company Name <span className="text-red-500">*</span>
+                Customer Company Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -671,7 +511,7 @@ export default function CheckoutPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Receiver name <span className="text-red-500">*</span>
+                Customer Contact Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -685,7 +525,7 @@ export default function CheckoutPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Receiver Email <span className="text-red-500">*</span>
+                Customer Contact Email Address <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
@@ -699,7 +539,7 @@ export default function CheckoutPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Shipping Address <span className="text-red-500">*</span>
+                Customer Shipping Address <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -723,60 +563,6 @@ export default function CheckoutPage() {
               >
                 <option value=""></option>
                 <option>Alabama</option>
-                <option>Alaska</option>
-                <option>Arizona</option>
-                <option>Arkansas</option>
-                <option>Canada</option>
-                <option>California</option>
-                <option>Colorado</option>
-                <option>Connecticut</option>
-                <option>Delaware</option>
-                <option>District Of Columbia</option>
-                <option>Florida</option>
-                <option>Georgia</option>
-                <option>Hawaii</option>
-                <option>Idaho</option>
-                <option>Illinois</option>
-                <option>Indiana</option>
-                <option>Iowa</option>
-                <option>Kansas</option>
-                <option>Kentucky</option>
-                <option>Louisiana</option>
-                <option>Maine</option>
-                <option>Maryland</option>
-                <option>Massachusetts</option>
-                <option>Michigan</option>
-                <option>Minnesota</option>
-                <option>Mississippi</option>
-                <option>Missouri</option>
-                <option>Montana</option>
-                <option>Nebraska</option>
-                <option>Nevada</option>
-                <option>New Hampshire</option>
-                <option>New Jersey</option>
-                <option>New Mexico</option>
-                <option>New York</option>
-                <option>North Carolina</option>
-                <option>North Dakota</option>
-                <option>Ohio</option>
-                <option>Oklahoma</option>
-                <option>Oregon</option>
-                <option>Pennsylvania</option>
-                <option>Rhode Island</option>
-                <option>South Carolina</option>
-                <option>South Dakota</option>
-                <option>Tennessee</option>
-                <option>Texas</option>
-                <option>Utah</option>
-                <option>Vermont</option>
-                <option>Virginia</option>
-                <option>Washington</option>
-                <option>West Virginia</option>
-                <option>Wisconsin</option>
-                <option>Wyoming</option>
-                <option>Armed Forces (AA)</option>
-                <option>Armed Forces (AE)</option>
-                <option>Armed Forces (AP)</option><option>Alabama</option>
                 <option>Alaska</option>
                 <option>Arizona</option>
                 <option>Arkansas</option>
@@ -865,7 +651,7 @@ export default function CheckoutPage() {
           </div>
         </section>
 
-        {/* Opportunity Details (Conditional) */}
+        {/* Opportunity Details */}
         <section className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
           <div className="bg-[#99a1af] text-white px-4 py-2 rounded-t-md text-lg font-semibold">
             <h3 className="text-lg font-bold">Opportunity Details</h3>
@@ -891,19 +677,6 @@ export default function CheckoutPage() {
                     <tr key={item.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50/50">
                       <td className="py-4 px-6 bg-white">
                         <div className="flex items-start gap-4">
-                          {/* Product Thumbnail */}
-                          {/* <div className="w-16 h-16 flex-shrink-0 bg-white border border-gray-100 rounded-md p-1 flex items-center justify-center">
-                            {item.main_image_url ? (
-                              <img
-                                src={item.main_image_url}
-                                alt={item.product_name}
-                                className="max-w-full max-h-full object-contain"
-                              />
-                            ) : (
-                              <div className="text-[10px] text-gray-300">No Image</div>
-                            )}
-                          </div> */}
-
                           <div className="flex-1">
                             <div className="font-medium text-[15px] text-gray-900 mb-0.5">{item.product_name}</div>
                             {item.product_sku && (
@@ -941,15 +714,35 @@ export default function CheckoutPage() {
           </div>
         </section>
 
+        {/* Terms and Conditions Checkbox */}
+        <div className="flex items-center justify-center gap-2 mt-6">
+          <input
+            type="checkbox"
+            id="terms"
+            checked={termsAccepted}
+            onChange={(e) => setTermsAccepted(e.target.checked)}
+            required
+            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
+          />
+          <label htmlFor="terms" className="text-sm text-gray-700 cursor-pointer select-none">
+            I have read and agree to the website <span className="underline text-blue-600 font-semibold cursor-pointer">terms and conditions</span> <span className="text-red-500">*</span>
+          </label>
+        </div>
+
         {/* Submit Button */}
         <div className="flex justify-center mt-8 pb-10">
           <button
             type="submit"
-            disabled={items.length === 0}
-            className={`font-medium py-3 px-16 rounded-full shadow-lg transition-all transform text-lg ${items.length === 0
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-[#C65326] hover:bg-[#b05229] text-white hover:scale-105'
-              }`}
+            disabled={items.length === 0 || !termsAccepted}
+            style={{
+              backgroundColor: items.length === 0 || !termsAccepted ? '#e5e7eb' : '#76e6d1',
+              color: items.length === 0 || !termsAccepted ? '#9ca3af' : '#000000',
+            }}
+            className={`font-medium py-3 px-16 rounded-full shadow-lg transition-all transform text-lg ${
+              items.length === 0 || !termsAccepted
+                ? 'cursor-not-allowed opacity-60'
+                : 'hover:scale-105 cursor-pointer font-bold'
+            }`}
           >
             Place Order
           </button>

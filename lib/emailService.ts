@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const FROM_EMAIL = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
-const FROM_NAME = process.env.SMTP_FROM_NAME || "Logi-Ace CDW";
+const FROM_NAME = process.env.SMTP_FROM_NAME || "Logi-ACE (CDW)";
 const SENDER = `"${FROM_NAME}" <${FROM_EMAIL}>`;
 const ADMIN_EMAIL = ["ammar@works360.com", "arman@works360.com"];
 
@@ -35,21 +35,21 @@ export async function sendWaitlistSubscribedEmail(data: {
             <td align="center">
               <table width="650" style="background:#ffffff;border:1px solid #e8edf3;border-radius:12px;overflow:hidden;" cellpadding="0" cellspacing="0">
                 <!-- HEADER -->
-                <tr><td align="center" style="background:#f5f5f5;padding:15px 24px;text-align:center;"><img src="cid:logoimg" width="170" alt="SHI UC HUB" style="display:inline-block;"></td></tr>
+                <tr><td align="center" style="background:#f5f5f5;padding:15px 24px;text-align:center;"><img src="cid:logoimg" width="170" alt="Logi-ACE" style="display:inline-block;"></td></tr>
                 
                 <!-- CONTENT -->
                 <tr>
                   <td style="padding:40px; text-align:left;">
                     <h2 style="color: #0b1f2a; margin-bottom: 24px;">Product Subscribed</h2>
                     <p style="font-size:14px;color:#334b59;line-height:20px;">Hi <span style="color: #0066ff; text-decoration: underline;">${email}</span>,</p>
-                    <p style="font-size:14px;color:#334b59;line-height:20px;">You have subscribed to an out of stock device on SHI UC HUB. An email notification will be sent once the product is back in stock.</p>
+                    <p style="font-size:14px;color:#334b59;line-height:20px;">You have subscribed to an out of stock device on Logi-ACE (CDW). An email notification will be sent once the product is back in stock.</p>
                     
                     <div style="margin-top:24px; background: #f8fafc; padding: 20px; border-radius: 8px; border:1px solid #e7edf2;">
                       <p style="margin:0 0 10px 0;font-size:13px;">Product Name: <strong>${productName}</strong></p>
                       <p style="margin:0;font-size:13px;">Customer Company Name: <strong>${companyName || "N/A"}</strong></p>
                     </div>
                     
-                    <p style="margin-top:24px;font-size:14px;color:#334b59;">Thank you for using SHI UC HUB</p>
+                    <p style="margin-top:24px;font-size:14px;color:#334b59;">Thank you for using Logi-ACE (CDW)</p>
                   </td>
                 </tr>
 
@@ -93,7 +93,7 @@ export async function sendBackInStockEmail(data: {
             <td align="center">
               <table width="650" style="background:#ffffff;border:1px solid #e8edf3;border-radius:12px;overflow:hidden;" cellpadding="0" cellspacing="0">
                 <!-- HEADER -->
-                <tr><td align="center" style="background:#f5f5f5;padding:15px 24px;text-align:center;"><img src="cid:logoimg" width="170" alt="SHI UC HUB" style="display:inline-block;"></td></tr>
+                <tr><td align="center" style="background:#f5f5f5;padding:15px 24px;text-align:center;"><img src="cid:logoimg" width="170" alt="Logi-ACE" style="display:inline-block;"></td></tr>
                 
                 <!-- CONTENT -->
                 <tr>
@@ -109,7 +109,7 @@ export async function sendBackInStockEmail(data: {
                       </a>
                     </div>
                     
-                    <p style="font-size:14px;color:#334b59;">Thank you for using SHI UC HUB.</p>
+                    <p style="font-size:14px;color:#334b59;">Thank you for using Logi-ACE (CDW).</p>
                   </td>
                 </tr>
 

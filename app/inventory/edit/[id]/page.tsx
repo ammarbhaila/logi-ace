@@ -283,13 +283,13 @@ export default function EditInventoryPage() {
                   }
                 >
                   <option value="">Select OEM</option>
-                  <option value="Poly">Poly</option>
                   <option value="Logitech">Logitech</option>
+                  {/* <option value="Poly">Poly</option>
                   <option value="Neat">Neat</option>
                   <option value="Bose">Bose</option>
                   <option value="HP">HP</option>
                   <option value="Poly Seed">Poly Seed</option>
-                  <option value="Swytch">Swytch</option>
+                  <option value="Swytch">Swytch</option> */}
                 </select>
               </div>
 
@@ -407,6 +407,7 @@ export default function EditInventoryPage() {
                   <option value="Extend">Extend</option>
                   <option value="Swytch">Swytch</option>
                   <option value="Accessories">Accessories</option>
+                  <option value="Room Add-Ons and Accessories">Room Add-Ons and Accessories</option>` 11`
                 </select>
               </div>
 

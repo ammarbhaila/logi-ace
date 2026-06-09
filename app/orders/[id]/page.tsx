@@ -530,102 +530,75 @@ export default function OrderDetailsPage() {
                             </div>
                             <h3 className="text-[16px] font-semibold text-[#111827]">Opportunity Details</h3>
                         </div>
-
                         <div className="p-6 grid grid-cols-2 gap-y-6 gap-x-4">
                             <div>
-                                <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Device Size (Units)</p>
-                                <p className="text-[12px] text-[#111827] font-medium">{order.device_opportunity_size_units}</p>
+                                <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Opportunity size (Number of rooms)</p>
+                                <p className="text-[12px] text-[#111827] font-medium">{order.device_opportunity_size_units ?? 'N/A'}</p>
                             </div>
                             <div>
-                                <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Revenue ($ Size)</p>
-                                <p className="text-[12px] text-[#111827] font-medium">${Number(order.revenue_opportunity_size).toLocaleString()}</p>
+                                <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Has the customer determined a project budget?</p>
+                                <p className="text-[12px] text-[#111827] font-medium">{order.technical_resource ?? 'N/A'}</p>
                             </div>
                             <div>
-                                <p className="font-medium-inter text-[13px] text-gray-500 mb-1">CRM Account #</p>
-                                <p className="text-[12px] text-[#111827] font-medium">{order.crm_account_number}</p>
+                                <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Estimated Budget Amount</p>
+                                <p className="text-[12px] text-[#111827] font-medium">{order.expected_participants ?? 'N/A'}</p>
                             </div>
                             <div>
-                                <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Segment</p>
-                                <p className="text-[12px] text-[#111827] font-medium">{order.segment}</p>
+                                <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Revenue Opportunity Size</p>
+                                <p className="text-[12px] text-[#111827] font-medium">
+                                    {order.revenue_opportunity_size ? `$${Number(order.revenue_opportunity_size).toLocaleString()}` : 'N/A'}
+                                </p>
                             </div>
                             <div>
-                                <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Estimated Close Date</p>
+                                <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Is your customer evaluating any other collaboration solutions?</p>
+                                <p className="text-[12px] text-[#111827] font-medium">{order.in_house_expertise ?? 'N/A'}</p>
+                            </div>
+                            <div>
+                                {order.in_house_expertise === 'Yes' && (
+                                    <>
+                                        <p className="font-medium-inter text-[13px] text-gray-500 mb-1">If yes, provide competitive vendor</p>
+                                        <p className="text-[12px] text-[#111827] font-medium">{order.opportunity_link || 'N/A'}</p>
+                                    </>
+                                )}
+                            </div>
+                            <div>
+                                <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Has a Logitech AE been engaged?</p>
+                                <p className="text-[12px] text-[#111827] font-medium">{order.logitech_engaged ?? 'N/A'}</p>
+                            </div>
+                            <div>
+                                {order.logitech_engaged === 'Yes' && (
+                                    <>
+                                        <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Logitech AE Name</p>
+                                        <p className="text-[12px] text-[#111827] font-medium">{order.engaged_ae_name || 'N/A'}</p>
+                                    </>
+                                )}
+                            </div>
+                            <div>
+                                <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Approved Deal Reg</p>
+                                <p className="text-[12px] text-[#111827] font-medium">{order.approved_deal_reg ?? 'N/A'}</p>
+                            </div>
+                            <div>
+                                <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Reg #</p>
+                                <p className="text-[12px] text-[#111827] font-medium">{order.reg_number || 'N/A'}</p>
+                            </div>
+                            <div>
+                                <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Is this a Staged Roll out?</p>
+                                <p className="text-[12px] text-[#111827] font-medium">{order.room_upgrade ?? 'N/A'}</p>
+                            </div>
+                            <div>
+                                <p className="font-medium-inter text-[13px] text-gray-500 mb-1">SPS Account #</p>
+                                <p className="text-[12px] text-[#111827] font-medium">{order.crm_account_number || 'N/A'}</p>
+                            </div>
+                            <div>
+                                <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Desired Demo Delivery Date</p>
+                                <p className="text-[12px] text-[#111827] font-medium">{order.customer_planning_version || 'N/A'}</p>
+                            </div>
+                            <div>
+                                <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Estimated Closed Date</p>
                                 <p className="text-[12px] text-[#111827] font-medium">
                                     {order.estimated_closed_date ? new Date(order.estimated_closed_date).toLocaleDateString() : 'N/A'}
                                 </p>
                             </div>
-                            <div>
-                                <p className="font-medium-inter text-[14px] text-gray-500 mb-1">Opportunity Link</p>
-                                <a href={order.opportunity_link} target="_blank" rel="noopener noreferrer" className="text-[13px] text-blue-600 font-medium hover:underline break-all">
-                                    {order.opportunity_link || 'N/A'}
-                                </a>
-                            </div>
-
-                            {/* POLY FIELDS */}
-                            {hasPoly && (
-                                <>
-                                    <div>
-                                        <p className="font-medium-inter text-[13px] text-gray-500 mb-1">In-house Expertise</p>
-                                        <p className="text-[12px] text-[#111827] font-medium">{order.in_house_expertise}</p>
-                                    </div>
-                                    <div>
-                                        <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Technical Resource</p>
-                                        <p className="text-[12px] text-[#111827] font-medium">{order.technical_resource}</p>
-                                    </div>
-                                    <div>
-                                        <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Approved Deal Reg</p>
-                                        <p className="text-[12px] text-[#111827] font-medium">{order.approved_deal_reg || 'N/A'}</p>
-                                    </div>
-                                    <div>
-                                        <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Planning Version</p>
-                                        <p className="text-[12px] text-[#111827] font-medium">{order.customer_planning_version || 'N/A'}</p>
-                                    </div>
-                                    <div>
-                                        <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Deal Reg Number</p>
-                                        <p className="text-[12px] text-[#111827] font-medium">{order.reg_number || 'N/A'}</p>
-                                    </div>
-                                </>
-                            )}
-
-                            {/* LOGITECH SPECIFIC */}
-                            {hasLogitech && (
-                                <>
-                                    <div>
-                                        <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Logitech AE Engaged</p>
-                                        <p className="text-[12px] text-[#111827] font-medium">{order.logitech_engaged}</p>
-                                    </div>
-                                    <div>
-                                        <p className="font-medium-inter text-[13px] text-gray-500 mb-1">AE Name</p>
-                                        <p className="text-[12px] text-[#111827] font-medium">{order.engaged_ae_name || 'N/A'}</p>
-                                    </div>
-                                    <div>
-                                        <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Technical Support</p>
-                                        <p className="text-[12px] text-[#111827] font-medium">{order.technical_support}</p>
-                                    </div>
-                                </>
-                            )}
-
-                            {/* NEAT SPECIFIC */}
-                            {hasNeat && (
-                                <div>
-                                    <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Virtual Support</p>
-                                    <p className="text-[12px] text-[#111827] font-medium">{order.virtual_support}</p>
-                                </div>
-                            )}
-
-                            {/* SHARED LOGITECH / NEAT FIELDS */}
-                            {(hasLogitech || hasNeat) && (
-                                <>
-                                    <div>
-                                        <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Rooms to Upgrade</p>
-                                        <p className="text-[12px] text-[#111827] font-medium">{order.room_upgrade}</p>
-                                    </div>
-                                    <div>
-                                        <p className="font-medium-inter text-[13px] text-gray-500 mb-1">Expected Participants</p>
-                                        <p className="text-[12px] text-[#111827] font-medium">{order.expected_participants}</p>
-                                    </div>
-                                </>
-                            )}
                         </div>
                     </div>
                 </div>

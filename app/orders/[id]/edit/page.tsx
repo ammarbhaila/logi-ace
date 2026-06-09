@@ -58,7 +58,7 @@ export default function OrderEditPage() {
         notes: '',
         sales_executive: '',
         sales_executive_email: '',
-        sales_manager: '',
+        account_opportunity_owner: '',
         sales_manager_email: '',
         customer_company_name: '',
         customer_contact_name: '',
@@ -71,19 +71,19 @@ export default function OrderEditPage() {
         // Common Opportunity Details
         device_opportunity_size_units: '',
         revenue_opportunity_size: '',
-        crm_account_number: '',
+        sps_account_number: '',
         segment: '',
         estimated_closed_date: '',
-        opportunity_link: '',
+        competitive_vendor: '',
         // OEM Specific / Additional
         approved_deal_reg: '',
         reg_number: '',
         platform: '',
-        customer_planning_version: '',
-        in_house_expertise: '',
-        technical_resource: '',
-        room_upgrade: '',
-        expected_participants: '',
+        desired_demo_delivery_date: '',
+        evaluating_other_solutions: '',
+        project_budget_determined: '',
+        staged_roll_out: '',
+        estimated_budget_amount: '',
         technical_support: '',
         logitech_engaged: '',
         engaged_ae_name: '',
@@ -140,7 +140,7 @@ export default function OrderEditPage() {
                         notes: data.notes || '',
                         sales_executive: data.sales_executive || '',
                         sales_executive_email: data.sales_executive_email || '',
-                        sales_manager: data.sales_manager || '',
+                        account_opportunity_owner: data.account_opportunity_owner || '',
                         sales_manager_email: data.sales_manager_email || '',
                         customer_company_name: data.customer_company_name || '',
                         customer_contact_name: data.customer_contact_name || '',
@@ -153,19 +153,19 @@ export default function OrderEditPage() {
                         // Common Opportunity Details
                         device_opportunity_size_units: data.device_opportunity_size_units || '',
                         revenue_opportunity_size: data.revenue_opportunity_size || '',
-                        crm_account_number: data.crm_account_number || '',
+                        sps_account_number: data.sps_account_number || '',
                         segment: data.segment || '',
                         estimated_closed_date: data.estimated_closed_date ? new Date(data.estimated_closed_date).toISOString().split('T')[0] : '',
-                        opportunity_link: data.opportunity_link || '',
+                        competitive_vendor: data.competitive_vendor || '',
                         // OEM Specific / Additional
                         approved_deal_reg: data.approved_deal_reg || '',
                         reg_number: data.reg_number || '',
                         platform: data.platform || '',
-                        customer_planning_version: data.customer_planning_version || '',
-                        in_house_expertise: data.in_house_expertise || '',
-                        technical_resource: data.technical_resource || '',
-                        room_upgrade: data.room_upgrade || '',
-                        expected_participants: data.expected_participants || '',
+                        desired_demo_delivery_date: data.desired_demo_delivery_date || '',
+                        evaluating_other_solutions: data.evaluating_other_solutions || '',
+                        project_budget_determined: data.project_budget_determined || '',
+                        staged_roll_out: data.staged_roll_out || '',
+                        estimated_budget_amount: data.estimated_budget_amount || '',
                         technical_support: data.technical_support || '',
                         logitech_engaged: data.logitech_engaged || '',
                         engaged_ae_name: data.engaged_ae_name || '',
@@ -523,7 +523,7 @@ export default function OrderEditPage() {
                                 formData: {
                                     salesExecutive: fullData.sales_executive,
                                     salesExecutiveEmail: fullData.sales_executive_email,
-                                    salesManager: fullData.sales_manager,
+                                    accountOpportunityOwner: fullData.account_opportunity_owner,
                                     salesManagerEmail: fullData.sales_manager_email,
                                     customerCompanyName: fullData.customer_company_name,
                                     customerContactName: fullData.customer_contact_name,
@@ -534,20 +534,20 @@ export default function OrderEditPage() {
                                     zip: fullData.zip,
                                     deviceOpportunitySizeUnits: fullData.device_opportunity_size_units,
                                     revenueOpportunitySize: fullData.revenue_opportunity_size,
-                                    roomUpgrade: fullData.room_upgrade,
-                                    expectedParticipants: fullData.expected_participants,
+                                    stagedRollOut: fullData.staged_roll_out,
+                                    estimatedBudgetAmount: fullData.estimated_budget_amount,
                                     logitechEngaged: fullData.logitech_engaged,
                                     engagedAENAME: fullData.engaged_ae_name,
                                     technicalSupport: fullData.technical_support,
                                     virtualSupport: fullData.virtual_support,
                                     approvedDealReg: fullData.approved_deal_reg,
-                                    inHouseExpertise: fullData.in_house_expertise,
-                                    technicalResource: fullData.technical_resource,
-                                    customerPlanningVersion: fullData.customer_planning_version,
+                                    evaluatingOtherSolutions: fullData.evaluating_other_solutions,
+                                    projectBudgetDetermined: fullData.project_budget_determined,
+                                    desiredDemoDeliveryDate: fullData.desired_demo_delivery_date,
                                     regNumber: fullData.reg_number,
                                     platform: fullData.platform,
-                                    opportunityLink: fullData.opportunity_link,
-                                    crmAccount: fullData.crm_account_number,
+                                    competitiveVendor: fullData.competitive_vendor,
+                                    spsAccountNumber: fullData.sps_account_number,
                                     segment: fullData.segment,
                                     estimatedClosedDate: fullData.estimated_closed_date,
                                     notes: fullData.notes,
@@ -667,7 +667,7 @@ export default function OrderEditPage() {
                                     formData: {
                                         salesExecutive: fullData.sales_executive,
                                         salesExecutiveEmail: fullData.sales_executive_email,
-                                        salesManager: fullData.sales_manager,
+                                        accountOpportunityOwner: fullData.account_opportunity_owner,
                                         salesManagerEmail: fullData.sales_manager_email,
                                         customerCompanyName: fullData.customer_company_name,
                                         customerContactName: fullData.customer_contact_name,
@@ -678,20 +678,20 @@ export default function OrderEditPage() {
                                         zip: fullData.zip,
                                         deviceOpportunitySizeUnits: fullData.device_opportunity_size_units,
                                         revenueOpportunitySize: fullData.revenue_opportunity_size,
-                                        roomUpgrade: fullData.room_upgrade,
-                                        expectedParticipants: fullData.expected_participants,
+                                        stagedRollOut: fullData.staged_roll_out,
+                                        estimatedBudgetAmount: fullData.estimated_budget_amount,
                                         logitechEngaged: fullData.logitech_engaged,
                                         engagedAENAME: fullData.engaged_ae_name,
                                         technicalSupport: fullData.technical_support,
                                         virtualSupport: fullData.virtual_support,
                                         approvedDealReg: fullData.approved_deal_reg,
-                                        inHouseExpertise: fullData.in_house_expertise,
-                                        technicalResource: fullData.technical_resource,
-                                        customerPlanningVersion: fullData.customer_planning_version,
+                                        evaluatingOtherSolutions: fullData.evaluating_other_solutions,
+                                        projectBudgetDetermined: fullData.project_budget_determined,
+                                        desiredDemoDeliveryDate: fullData.desired_demo_delivery_date,
                                         regNumber: fullData.reg_number,
                                         platform: fullData.platform,
-                                        opportunityLink: fullData.opportunity_link,
-                                        crmAccount: fullData.crm_account_number,
+                                        competitiveVendor: fullData.competitive_vendor,
+                                        spsAccountNumber: fullData.sps_account_number,
                                         segment: fullData.segment,
                                         estimatedClosedDate: fullData.estimated_closed_date,
                                         notes: fullData.notes,
@@ -1160,7 +1160,7 @@ export default function OrderEditPage() {
                             <table className="w-full text-sm">
                                 <tbody className="divide-y divide-gray-100">
                                     <tr>
-                                        <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Device Size (Units)</td>
+                                        <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Opportunity size (Number of rooms)</td>
                                         <td className="p-4 font-medium w-1/4">
                                             <input
                                                 type="number"
@@ -1171,7 +1171,7 @@ export default function OrderEditPage() {
                                                 className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px] ${!canEditAll ? 'bg-gray-50 border-gray-100 cursor-not-allowed text-gray-500' : ''}`}
                                             />
                                         </td>
-                                        <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Revenue ($ Size)</td>
+                                        <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Revenue Opportunity Size ($ Device Rev)</td>
                                         <td className="p-4 font-medium w-1/4">
                                             <input
                                                 type="number"
@@ -1184,11 +1184,11 @@ export default function OrderEditPage() {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">CRM Account #</td>
+                                        <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">SPS Account #</td>
                                         <td className="p-4 font-medium">
                                             <input
-                                                name="crm_account_number"
-                                                value={formData.crm_account_number}
+                                                name="sps_account_number"
+                                                value={formData.sps_account_number}
                                                 onChange={handleInputChange}
                                                 readOnly={!canEditAll}
                                                 className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px] ${!canEditAll ? 'bg-gray-50 border-gray-100 cursor-not-allowed text-gray-500' : ''}`}
@@ -1216,7 +1216,7 @@ export default function OrderEditPage() {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Est. Close Date</td>
+                                        <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Estimated Closed Date</td>
                                         <td className="p-4 font-medium">
                                             <input
                                                 type="date"
@@ -1227,16 +1227,16 @@ export default function OrderEditPage() {
                                                 className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px] ${!canEditAll ? 'bg-gray-50 border-gray-100 cursor-not-allowed text-gray-500' : ''}`}
                                             />
                                         </td>
-                                        <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Opportunity Link</td>
+                                        <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">If yes, provide competitive vendor</td>
                                         <td className="p-4 font-medium">
                                             <input
-                                                type="url"
-                                                name="opportunity_link"
-                                                value={formData.opportunity_link}
+                                                type="text"
+                                                name="competitive_vendor"
+                                                value={formData.competitive_vendor}
                                                 onChange={handleInputChange}
                                                 readOnly={!canEditAll}
                                                 className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px] ${!canEditAll ? 'bg-gray-50 border-gray-100 cursor-not-allowed text-gray-500' : ''}`}
-                                                placeholder="https://..."
+                                                placeholder="Competitor name"
                                             />
                                         </td>
                                     </tr>
@@ -1244,17 +1244,17 @@ export default function OrderEditPage() {
                                     {hasPoly && (
                                         <>
                                             <tr>
-                                                <td className="p-4 bg-gray-50/50 font-se    mibold text-gray-500 text-xs">In-house Expertise</td>
+                                                <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Is your customer evaluating any other collaboration solutions?</td>
                                                 <td className="p-4 font-medium">
-                                                    <select name="in_house_expertise" value={formData.in_house_expertise} onChange={handleInputChange} disabled={!canEditAll} className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px] ${!canEditAll ? 'bg-gray-50 border-gray-100 cursor-not-allowed text-gray-500' : ''}`}>
+                                                    <select name="evaluating_other_solutions" value={formData.evaluating_other_solutions} onChange={handleInputChange} disabled={!canEditAll} className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px] ${!canEditAll ? 'bg-gray-50 border-gray-100 cursor-not-allowed text-gray-500' : ''}`}>
                                                         <option value="">Select</option>
                                                         <option value="Yes">Yes</option>
                                                         <option value="No">No</option>
                                                     </select>
                                                 </td>
-                                                <td className="p-4 bg-gray-50/50 font-s emibold text-gray-500 text-xs">Technical Resource</td>
+                                                <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Has the customer determined a project budget?</td>
                                                 <td className="p-4 font-medium">
-                                                    <select name="technical_resource" value={formData.technical_resource} onChange={handleInputChange} disabled={!canEditAll} className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px] ${!canEditAll ? 'bg-gray-50 border-gray-100 cursor-not-allowed text-gray-500' : ''}`}>
+                                                    <select name="project_budget_determined" value={formData.project_budget_determined} onChange={handleInputChange} disabled={!canEditAll} className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px] ${!canEditAll ? 'bg-gray-50 border-gray-100 cursor-not-allowed text-gray-500' : ''}`}>
                                                         <option value="">Select</option>
                                                         <option value="Yes">Yes</option>
                                                         <option value="No">No</option>
@@ -1276,16 +1276,11 @@ export default function OrderEditPage() {
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Planning Version</td>
+                                                <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Desired Demo Delivery Date</td>
                                                 <td className="p-4 font-medium">
-                                                    <select name="customer_planning_version" value={formData.customer_planning_version} onChange={handleInputChange} disabled={!canEditAll} className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px] ${!canEditAll ? 'bg-gray-50 border-gray-100 cursor-not-allowed text-gray-500' : ''}`}>
-                                                        <option value="">Select</option>
-                                                        <option value="Zoom Mode">Zoom Mode</option>
-                                                        <option value="Teams Mode">Teams Mode</option>
-                                                        <option value="Poly Mode">Poly Mode</option>
-                                                    </select>
+                                                    <input type="date" name="desired_demo_delivery_date" value={formData.desired_demo_delivery_date} onChange={handleInputChange} readOnly={!canEditAll} className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px] ${!canEditAll ? 'bg-gray-50 border-gray-100 cursor-not-allowed text-gray-500' : ''}`} />
                                                 </td>
-                                                <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Deal Reg #</td>
+                                                <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Reg #</td>
                                                 <td className="p-4 font-medium text-xs">
                                                     <input name="reg_number" value={formData.reg_number} onChange={handleInputChange} readOnly={!canEditAll} className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px] ${!canEditAll ? 'bg-gray-50 border-gray-100 cursor-not-allowed text-gray-500' : ''}`} placeholder="Reg #" />
                                                 </td>
@@ -1297,7 +1292,7 @@ export default function OrderEditPage() {
                                     {hasLogitech && (
                                         <>
                                             <tr>
-                                                <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Logitech AE Engaged</td>
+                                                <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Has a Logitech AE been engaged?</td>
                                                 <td className="p-4 font-medium">
                                                     <select name="logitech_engaged" value={formData.logitech_engaged} onChange={handleInputChange} disabled={!canEditAll} className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px] ${!canEditAll ? 'bg-gray-50 border-gray-100 cursor-not-allowed text-gray-500' : ''}`}>
                                                         <option value="">Select</option>
@@ -1305,9 +1300,9 @@ export default function OrderEditPage() {
                                                         <option value="No">No</option>
                                                     </select>
                                                 </td>
-                                                <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">AE Name</td>
+                                                <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Logitech AE Name</td>
                                                 <td className="p-4 font-medium text-xs">
-                                                    <input name="engaged_ae_name" value={formData.engaged_ae_name} onChange={handleInputChange} readOnly={!canEditAll} className={`w-full p-2.5 border border-gray-200 rounded-lg text-sm ${!canEditAll ? 'bg-gray-50 border-gray-100 cursor-not-allowed text-gray-500' : ''}`} placeholder="AE Name" />
+                                                    <input name="engaged_ae_name" value={formData.engaged_ae_name} onChange={handleInputChange} readOnly={!canEditAll} className={`w-full p-2.5 border border-gray-200 rounded-lg text-sm ${!canEditAll ? 'bg-gray-50 border-gray-100 cursor-not-allowed text-gray-500' : ''}`} placeholder="Logitech AE Name" />
                                                 </td>
                                             </tr>
                                             <tr>
@@ -1340,22 +1335,23 @@ export default function OrderEditPage() {
                                     {/* SHARED LOGITECH / NEAT FIELDS */}
                                     {(hasLogitech || hasNeat) && (
                                         <tr>
-                                            <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Rooms to Upgrade</td>
+                                            <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Is this a Staged Roll out?</td>
                                             <td className="p-4 font-medium">
-                                                <select name="room_upgrade" value={formData.room_upgrade} onChange={handleInputChange} disabled={!canEditAll} className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px] ${!canEditAll ? 'bg-gray-50 border-gray-100 cursor-not-allowed text-gray-500' : ''}`}>
+                                                <select name="staged_roll_out" value={formData.staged_roll_out} onChange={handleInputChange} disabled={!canEditAll} className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px] ${!canEditAll ? 'bg-gray-50 border-gray-100 cursor-not-allowed text-gray-500' : ''}`}>
                                                     <option value="">Select</option>
-                                                    {[...Array(10).keys()].map(n => (
-                                                        <option key={n + 1} value={n + 1}>{n + 1}</option>
-                                                    ))}
+                                                    <option value="Yes">Yes</option>
+                                                    <option value="No">No</option>
                                                 </select>
                                             </td>
-                                            <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Expected Participants</td>
+                                            <td className="p-4 bg-gray-50/50 font-semibold text-gray-500 text-xs">Estimated Budget Amount</td>
                                             <td className="p-4 font-medium">
-                                                <select name="expected_participants" value={formData.expected_participants} onChange={handleInputChange} disabled={!canEditAll} className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px] ${!canEditAll ? 'bg-gray-50 border-gray-100 cursor-not-allowed text-gray-500' : ''}`}>
+                                                <select name="estimated_budget_amount" value={formData.estimated_budget_amount} onChange={handleInputChange} disabled={!canEditAll} className={`w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white text-[14px] ${!canEditAll ? 'bg-gray-50 border-gray-100 cursor-not-allowed text-gray-500' : ''}`}>
                                                     <option value="">Select</option>
-                                                    {["1-2", "2-4", "4-8", "8-12", "12-20", "20-46", "46+"].map(range => (
-                                                        <option key={range} value={range}>{range}</option>
-                                                    ))}
+                                                    <option value="Under $10,000">Under $10,000</option>
+                                                    <option value="$10,000 - $50,000">$10,000 - $50,000</option>
+                                                    <option value="$50,000 - $100,000">$50,000 - $100,000</option>
+                                                    <option value="$100,000 - $250,000">$100,000 - $250,000</option>
+                                                    <option value="$250,000+">$250,000+</option>
                                                 </select>
                                             </td>
                                         </tr>
