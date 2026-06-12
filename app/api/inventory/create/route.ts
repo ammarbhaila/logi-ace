@@ -3,6 +3,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { withAdminAuth } from '@/lib/apiAuth';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(req: NextRequest) {
   const auth = await withAdminAuth(req);
@@ -11,18 +12,32 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    // Auto-set stock_status based on stock_quantity
-    if (body.stock_quantity === 0) {
-      body.stock_status = "out_of_stock";
-    } else if (!body.stock_status) {
-      body.stock_status = "in_stock";
-    }
+    // Body could be a single object or an array of objects (variants)
+    const items = Array.isArray(body) ? body : [body];
+    
+    // Generate a unique group ID for this set of items to link them together
+    const groupId = items.length > 1 ? uuidv4() : null;
+
+    const itemsToInsert = items.map((item) => {
+      // Auto-set stock_status based on stock_quantity
+      if (item.stock_quantity === 0) {
+        item.stock_status = "out_of_stock";
+      } else if (!item.stock_status) {
+        item.stock_status = "in_stock";
+      }
+      
+      // If there are multiple items, link them together
+      if (groupId) {
+        item.group_id = groupId;
+      }
+      
+      return item;
+    });
 
     const { data, error } = await supabaseAdmin
       .from("inventory_products")
-      .insert(body)
-      .select()
-      .single();
+      .insert(itemsToInsert)
+      .select();
 
     if (error) {
       return NextResponse.json(
@@ -31,18 +46,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (data) {
+    if (data && data.length > 0) {
       // Log creation
-      await supabaseAdmin.from("inventory_logs").insert({
-        product_id: data.id,
-        product_name: data.product_name || 'Unknown',
-        product_sku: data.product_sku || 'Unknown',
+      const logs = data.map(item => ({
+        product_id: item.id,
+        product_name: item.product_name || 'Unknown',
+        product_sku: item.product_sku || 'Unknown',
         action: 'Product created',
         performed_by: auth.profile?.email || 'System'
-      });
+      }));
+      await supabaseAdmin.from("inventory_logs").insert(logs);
     }
 
-    return NextResponse.json(data);
+    return NextResponse.json(Array.isArray(body) ? data : data[0]);
   } catch (err) {
     return NextResponse.json(
       { error: "Server error" },

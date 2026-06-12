@@ -1,12 +1,22 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import { useCart } from "@/app/context/CartContext";
 import { toast } from "react-hot-toast";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import ProductEditSidebar from "@/app/components/ProductEditSidebar";
+
+type VariantCard = {
+  id: string;
+  color_name: string;
+  color_hex: string;
+  product_name: string;
+  product_sku: string;
+  stock_quantity: number;
+  image_url: string;
+};
 
 type Product = {
   id: string;
@@ -23,10 +33,16 @@ type Product = {
   stock_quantity: number;
   total_inventory: number;
   banner_image_url: string | null;
+  variants: VariantCard[] | null;
+  group_id?: string | null;
+  color_name?: string | null;
+  color_hex?: string | null;
 };
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
+  const initialVariantIdx = Number(searchParams.get("variant")) || 0;
   const { addItem, addItems } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
   const [bundleItems, setBundleItems] = useState<Product[]>([]);
@@ -41,6 +57,7 @@ export default function ProductDetailPage() {
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [isEditSidebarOpen, setIsEditSidebarOpen] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [selectedVariantIdx, setSelectedVariantIdx] = useState(initialVariantIdx);
 
   useEffect(() => {
     const getSession = async () => {
@@ -73,8 +90,35 @@ export default function ProductDetailPage() {
       .then((items) => {
         const found = items.find((p: Product) => p.id === id);
         if (found) {
+          if (found.group_id) {
+            const groupItems = items.filter((p: Product) => p.group_id === found.group_id);
+            found.variants = groupItems.map((p: Product) => ({
+              id: p.id,
+              color_name: p.color_name || '',
+              color_hex: p.color_hex || '#cccccc',
+              product_name: p.product_name,
+              product_sku: p.product_sku,
+              stock_quantity: p.stock_quantity,
+              image_url: p.main_image_url || ''
+            }));
+          } else {
+            // Self as variant
+            found.variants = [{
+              id: found.id,
+              color_name: found.color_name || '',
+              color_hex: found.color_hex || '#cccccc',
+              product_name: found.product_name,
+              product_sku: found.product_sku,
+              stock_quantity: found.stock_quantity,
+              image_url: found.main_image_url || ''
+            }];
+          }
+          
           setProduct(found);
-          setSelectedImage(found.main_image_url);
+          const activeVariantImage = found.variants && found.variants.length > selectedVariantIdx && found.variants[selectedVariantIdx].image_url
+            ? found.variants[selectedVariantIdx].image_url
+            : found.main_image_url;
+          setSelectedImage(activeVariantImage);
           if (found.bundle_type === "bundle" && found.bundle_products?.length) {
             const children = items.filter((p: Product) =>
               found.bundle_products.includes(p.id)
@@ -147,6 +191,14 @@ export default function ProductDetailPage() {
 
   const canEdit = userRole === 'Admin' || userRole === 'Shop Manager' || userRole === 'Super Subscriber';
 
+  const hasVariants = product.variants && product.variants.length > 0;
+  const activeVariant = hasVariants ? product.variants![selectedVariantIdx] || product.variants![0] : null;
+
+  const displayName = activeVariant?.product_name || (activeVariant?.color_name ? `${product.product_name} (${activeVariant.color_name})` : product.product_name);
+  const displaySku = activeVariant?.product_sku || product.product_sku;
+  const displayQuantity = activeVariant?.stock_quantity ?? product.stock_quantity;
+  const displayStockStatus = hasVariants ? (displayQuantity > 0 ? "in_stock" : "out_of_stock") : product.stock_status;
+
   const handleSaveSuccess = (updatedProduct: Product) => {
     // Optimistically update the local state without a full reload
     setProduct(updatedProduct);
@@ -183,7 +235,7 @@ export default function ProductDetailPage() {
               )}
 
               {/* BADGE */}
-              {!isMultiproduct && (product.stock_status !== "in_stock" || product.stock_quantity <= 0 || hasOutOfStockComponent) && (
+              {!isMultiproduct && (displayStockStatus !== "in_stock" || displayQuantity <= 0 || hasOutOfStockComponent) && (
                 <div className="absolute top-4 left-0 bg-[#EE2722] text-white text-[11px] font-bold px-3 py-1.5 rounded-r-full z-10">
                   Out of stock
                 </div>
@@ -227,14 +279,38 @@ export default function ProductDetailPage() {
 
             {/* Product Name */}
             <h1 className="text-[22px] font-medium text-gray-900 leading-tight">
-              {product.product_name}
+              {displayName}
             </h1>
 
             {/* SKU */}
             <p className="text-[14px] font-medium text-gray-500">
               <span className="font-medium text-gray-700"></span>{" "}
-              {product.product_sku}
+              {displaySku}
             </p>
+
+            {hasVariants && product.variants && product.variants.length > 1 && (
+              <div className="flex items-center gap-3 mt-2 mb-2">
+                <span className="text-sm font-medium text-gray-700">Color:</span>
+                <div className="flex items-center gap-2">
+                  {product.variants.map((v, i) => (
+                    <button
+                      key={i}
+                      title={v.color_name}
+                      onClick={() => {
+                        setSelectedVariantIdx(i);
+                        if (v.image_url) setSelectedImage(v.image_url);
+                      }}
+                      className={`w-8 h-8 rounded-full border-2 transition-all duration-150 ${
+                        i === selectedVariantIdx
+                          ? "border-gray-800 scale-110 shadow-md"
+                          : "border-gray-200 hover:border-gray-400"
+                      }`}
+                      style={{ backgroundColor: v.color_hex || "#cccccc" }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
 
             {product.description && (
               <p className="text-sm font-size-[18px] text-[#717182] leading-relaxed max-w-[700px]">
@@ -375,20 +451,20 @@ export default function ProductDetailPage() {
             {/* Stock Status */}
             {!isMultiproduct && (
               <p
-                className={`text-sm font-semibold ${product.stock_status === "in_stock"
+                className={`text-sm font-semibold ${displayStockStatus === "in_stock"
                   ? "text-[#023a62]"
                   : "text-red-500"
                   }`}
               >
-                {product.stock_status === "in_stock"
-                  ? `${product.stock_quantity} / ${product.total_inventory} In Stock`
+                {displayStockStatus === "in_stock"
+                  ? `${displayQuantity} ${hasVariants ? '' : `/ ${product.total_inventory}`} In Stock`
                   : "Out of Stock"}
               </p>
             )}
 
             {/* Qty + Add to Cart */}
-            {!isMultiproduct && product.stock_status === "in_stock" &&
-              product.stock_quantity > 0 &&
+            {!isMultiproduct && displayStockStatus === "in_stock" &&
+              displayQuantity > 0 &&
               !hasOutOfStockComponent && (
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-1 w-full sm:w-auto">
                   {/* Qty Dropdown */}
@@ -398,7 +474,7 @@ export default function ProductDetailPage() {
                       onChange={(e) => setQty(Number(e.target.value))}
                       className="w-full sm:w-auto appearance-none border border-gray-300 rounded-md pl-3 pr-6 py-2 text-sm text-gray-800 bg-white focus:outline-none focus:ring-1 focus:ring-gray-400 cursor-pointer"
                     >
-                      {Array.from({ length: product.stock_quantity }, (_, i) => i + 1).map((q) => (
+                      {Array.from({ length: displayQuantity }, (_, i) => i + 1).map((q) => (
                         <option key={q} value={q}>
                           {q}
                         </option>
@@ -414,14 +490,14 @@ export default function ProductDetailPage() {
                   <button
                     onClick={() =>
                       addItem({
-                        id: product.id,
-                        product_id: product.id,
-                        product_name: product.product_name,
-                        product_sku: product.product_sku,
-                        main_image_url: product.main_image_url ?? undefined,
+                        id: (hasVariants && product.variants) ? product.variants[selectedVariantIdx]?.id || product.id : product.id,
+                        product_id: (hasVariants && product.variants) ? product.variants[selectedVariantIdx]?.id || product.id : product.id,
+                        product_name: displayName,
+                        product_sku: displaySku,
+                        main_image_url: selectedImage ?? product.main_image_url ?? undefined,
                         quantity: qty,
                         oem: product.oem,
-                        stock_quantity: product.stock_quantity,
+                        stock_quantity: displayQuantity,
                         bundleItems:
                           product.bundle_type === "bundle"
                             ? bundleItems.map((i) => ({
@@ -469,7 +545,7 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            {!isMultiproduct && product.stock_status === "out_of_stock" && allComponentsOutOfStock && (
+            {!isMultiproduct && displayStockStatus === "out_of_stock" && allComponentsOutOfStock && (
               <div className="border border-gray-200 rounded-lg p-4 mt-2 bg-gray-50 w-md">
                 <p className="text-sm font-medium text-gray-700 mb-3">
                   Get an alert when back in stock

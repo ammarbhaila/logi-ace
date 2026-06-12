@@ -6,6 +6,7 @@ import { useCart } from "@/app/context/CartContext";
 import { supabase } from "@/lib/supabaseClient";
 
 type VariantCard = {
+  id: string;
   color_name: string;
   color_hex: string;
   product_name: string;
@@ -32,6 +33,9 @@ type Product = {
   product_category: string | null;
   menu_order: number | null;
   variants: VariantCard[] | null;
+  group_id?: string | null;
+  color_name?: string | null;
+  color_hex?: string | null;
 };
 
 import { useParams, notFound } from "next/navigation";
@@ -82,8 +86,45 @@ export default function OEMPage() {
           const filtered = data.filter(
             (p) => (p.oem || "").toLowerCase() === (oem || "").toLowerCase()
           );
+          // Group products by group_id
+          const groupedData: Product[] = [];
+          const groupMap = new Map<string, Product>();
 
-          setProducts(filtered);
+          for (const p of filtered) {
+            if (p.group_id) {
+              if (!groupMap.has(p.group_id)) {
+                p.variants = [];
+                groupMap.set(p.group_id, p);
+                groupedData.push(p);
+              } else {
+                const base = groupMap.get(p.group_id)!;
+                if (base.variants && base.variants.length === 0) {
+                  base.variants.push({
+                    id: base.id,
+                    color_name: base.color_name || '',
+                    color_hex: base.color_hex || '#cccccc',
+                    product_name: base.product_name,
+                    product_sku: base.product_sku,
+                    stock_quantity: base.stock_quantity,
+                    image_url: base.main_image_url || ''
+                  });
+                }
+                base.variants!.push({
+                  id: p.id,
+                  color_name: p.color_name || '',
+                  color_hex: p.color_hex || '#cccccc',
+                  product_name: p.product_name,
+                  product_sku: p.product_sku,
+                  stock_quantity: p.stock_quantity,
+                  image_url: p.main_image_url || ''
+                });
+              }
+            } else {
+              groupedData.push(p);
+            }
+          }
+
+          setProducts(groupedData);
 
           setProductTypes(
             Array.from(
@@ -406,7 +447,7 @@ export default function OEMPage() {
                   // Override with variant fields if available
                   if (hasVariants && product.variants) {
                     const activeVariant = product.variants[selectedIdx] || product.variants[0];
-                    displayName = activeVariant.product_name || product.product_name;
+                    displayName = activeVariant.product_name || (activeVariant.color_name ? `${product.product_name} (${activeVariant.color_name})` : product.product_name);
                     displaySku = activeVariant.product_sku || product.product_sku;
                     displayImage = activeVariant.image_url || product.main_image_url || "/placeholder.png";
                     displayQuantity = activeVariant.stock_quantity ?? product.stock_quantity;
@@ -431,7 +472,7 @@ export default function OEMPage() {
 
                       {/* IMAGE */}
                       <div className="flex items-center justify-center mb-4 w-full" style={{ maxWidth: "293px", height: "164px", overflow: "hidden" }}>
-                        <Link href={`/create-demo-kits/${product.id}`} className="block w-full h-full flex justify-center items-center">
+                        <Link href={`/create-demo-kits/${product.id}${hasVariants && selectedIdx > 0 ? `?variant=${selectedIdx}` : ''}`} className="block w-full h-full flex justify-center items-center">
                           <img
                             src={displayImage}
                             alt={displayName}
@@ -442,7 +483,7 @@ export default function OEMPage() {
 
                       {/* NAME */}
                       <Link
-                        href={`/create-demo-kits/${product.id}`}
+                        href={`/create-demo-kits/${product.id}${hasVariants && selectedIdx > 0 ? `?variant=${selectedIdx}` : ''}`}
                         className="mb-1 duration-200 group-hover:text-blue-600 transition-colors"
                       >
                         <h3 className="text-[12px] sm:text-[13px] font-medium text-gray-800 leading-snug line-clamp-2 px-1">
@@ -478,21 +519,21 @@ export default function OEMPage() {
                       <div className="mt-auto w-full flex justify-center pt-2">
                         {product.bundle_type === "Multiproduct" ? (
                           <Link
-                            href={`/create-demo-kits/${product.id}`}
+                            href={`/create-demo-kits/${product.id}${hasVariants && selectedIdx > 0 ? `?variant=${selectedIdx}` : ''}`}
                             className="inline-block text-[12px] font-medium py-2.5 px-8 rounded-[30px] border transition-colors border-black-300 text-black-700 bg-white hover:bg-[#76e6d1] hover:border-[#76e6d1] hover:text-black"
                           >
                             View Bundle
                           </Link>
                         ) : product.bundle_type === "bundle" ? (
                           <Link
-                            href={`/create-demo-kits/${product.id}`}
+                            href={`/create-demo-kits/${product.id}${hasVariants && selectedIdx > 0 ? `?variant=${selectedIdx}` : ''}`}
                             className="inline-block text-[12px] font-medium py-2.5 px-8 rounded-[2px] border transition-colors border-gray-300 text-gray-700 bg-white hover:bg-[#C65326] hover:border-gray-400 hover:text-white"
                           >
                             View Bundle
                           </Link>
                         ) : outOfStock ? (
                           <Link
-                            href={`/create-demo-kits/${product.id}`}
+                            href={`/create-demo-kits/${product.id}${hasVariants && selectedIdx > 0 ? `?variant=${selectedIdx}` : ''}`}
                             className="inline-block text-[12px] font-medium py-2.5 px-8 rounded-[2px] border transition-colors border-gray-300 text-gray-700 bg-white hover:bg-[#C65326] hover:border-gray-400 hover:text-white"
                           >
                             Add to Waitlist
@@ -501,8 +542,8 @@ export default function OEMPage() {
                           <button
                             onClick={() =>
                               addItem({
-                                id: `${product.id}__${displaySku}`, // Use unique ID for the specific variant
-                                product_id: product.id,
+                                id: (hasVariants && product.variants) ? product.variants[selectedIdx]?.id || product.id : product.id,
+                                product_id: (hasVariants && product.variants) ? product.variants[selectedIdx]?.id || product.id : product.id,
                                 product_name: displayName,
                                 product_sku: displaySku,
                                 main_image_url: displayImage,
