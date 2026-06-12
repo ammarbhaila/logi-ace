@@ -5,6 +5,15 @@ import Link from "next/link";
 import { useCart } from "@/app/context/CartContext";
 import { supabase } from "@/lib/supabaseClient";
 
+type VariantCard = {
+  color_name: string;
+  color_hex: string;
+  product_name: string;
+  product_sku: string;
+  stock_quantity: number;
+  image_url: string;
+};
+
 type Product = {
   id: string;
   product_name: string;
@@ -22,6 +31,7 @@ type Product = {
   product_wise_ordering: string | null;
   product_category: string | null;
   menu_order: number | null;
+  variants: VariantCard[] | null;
 };
 
 import { useParams, notFound } from "next/navigation";
@@ -36,6 +46,12 @@ export default function OEMPage() {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Track selected color variant per product card (keyed by product.id)
+  const [selectedVariants, setSelectedVariants] = useState<Record<string, number>>({});
+  const getSelectedVariantIdx = (productId: string) => selectedVariants[productId] ?? 0;
+  const setSelectedVariantIdx = (productId: string, idx: number) =>
+    setSelectedVariants((prev) => ({ ...prev, [productId]: idx }));
 
   const [productTypes, setProductTypes] = useState<string[]>([]);
   const [roomSizes, setRoomSizes] = useState<string[]>([]);
@@ -377,88 +393,133 @@ export default function OEMPage() {
               </div>
             ) : (
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
-                {filteredProducts.map((product) => (
-                  <div
-                    key={product.id}
-                    className="relative border border-gray-100 bg-white flex flex-col items-center text-center hover:shadow-xl transition-all duration-300 p-3 sm:p-5 rounded-2xl group"
-                  >
-                    {/* BADGE */}
-                    {isProductOutOfStock(product) && (
-                      <div className="absolute top-4 left-0 bg-[#EE2722] text-white text-[11px] font-semibold px-3 py-1.5 rounded-r-full z-10">
-                        Out of stock
-                      </div>
-                    )}
-                    {/* IMAGE */}
-                    <div className="flex items-center justify-center mb-4 w-full" style={{ maxWidth: "293px", height: "164px", overflow: "hidden" }}>
-                      <Link href={`/create-demo-kits/${product.id}`} className="block w-full h-full flex justify-center items-center">
-                        <img
-                          src={product.main_image_url || "/placeholder.png"}
-                          alt={product.product_name}
-                          style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
-                        />
-                      </Link>
-                    </div>
+                {filteredProducts.map((product) => {
+                  const hasVariants = product.variants && product.variants.length > 0;
+                  const selectedIdx = getSelectedVariantIdx(product.id);
+                  
+                  // Default to base product fields
+                  let displayName = product.product_name;
+                  let displaySku = product.product_sku;
+                  let displayImage = product.main_image_url || "/placeholder.png";
+                  let displayQuantity = product.stock_quantity;
 
-                    {/* NAME */}
-                    <Link
-                      href={`/create-demo-kits/${product.id}`}
-                      className="mb-1 duration-200 group-hover:text-blue-600 transition-colors"
+                  // Override with variant fields if available
+                  if (hasVariants && product.variants) {
+                    const activeVariant = product.variants[selectedIdx] || product.variants[0];
+                    displayName = activeVariant.product_name || product.product_name;
+                    displaySku = activeVariant.product_sku || product.product_sku;
+                    displayImage = activeVariant.image_url || product.main_image_url || "/placeholder.png";
+                    displayQuantity = activeVariant.stock_quantity ?? product.stock_quantity;
+                  }
+
+                  // Determine stock status for badge
+                  const outOfStock = product.bundle_type === "Multiproduct" 
+                    ? isProductOutOfStock(product) 
+                    : displayQuantity <= 0;
+
+                  return (
+                    <div
+                      key={product.id}
+                      className="relative border border-gray-100 bg-white flex flex-col items-center text-center hover:shadow-xl transition-all duration-300 p-3 sm:p-5 rounded-2xl group"
                     >
-                      <h3 className="text-[12px] sm:text-[13px] font-medium text-gray-800 leading-snug line-clamp-2 px-1">
-                        {product.product_name}
-                      </h3>
-                    </Link>
-
-                    {/* SKU */}
-                    <p className="text-[11px] text-gray-400 mb-5 tracking-wide mt-1">
-                      {product.product_sku}
-                    </p>
-
-                    {/* BUTTON */}
-                    <div className="mt-auto w-full flex justify-center pt-2">
-                      {product.bundle_type === "Multiproduct" ? (
-                        <Link
-                          href={`/create-demo-kits/${product.id}`}
-                          className="inline-block text-[12px] font-medium py-2.5 px-8 rounded-[30px] border transition-colors border-black-300 text-black-700 bg-white hover:bg-[#76e6d1] hover:border-[#76e6d1] hover:text-black"
-                        >
-                          View Bundle
-                        </Link>
-                      ) : product.bundle_type === "bundle" ? (
-                        <Link
-                          href={`/create-demo-kits/${product.id}`}
-                          className="inline-block text-[12px] font-medium py-2.5 px-8 rounded-[2px] border transition-colors border-gray-300 text-gray-700 bg-white hover:bg-[#C65326] hover:border-gray-400 hover:text-white"
-                        >
-                          View Bundle
-                        </Link>
-                      ) : isProductOutOfStock(product) ? (
-                        <Link
-                          href={`/create-demo-kits/${product.id}`}
-                          className="inline-block text-[12px] font-medium py-2.5 px-8 rounded-[2px] border transition-colors border-gray-300 text-gray-700 bg-white hover:bg-[#C65326] hover:border-gray-400 hover:text-white"
-                        >
-                          Add to Waitlist
-                        </Link>
-                      ) : (
-                        <button
-                          onClick={() =>
-                            addItem({
-                              id: product.id,
-                              product_id: product.id,
-                              product_name: product.product_name,
-                              product_sku: product.product_sku,
-                              main_image_url: product.main_image_url ?? undefined,
-                              quantity: getQty(product.id),
-                              oem: product.oem,
-                              stock_quantity: product.stock_quantity,
-                            })
-                          }
-                          className="inline-block text-[12px] font-medium py-2.5 px-8 rounded-[2px] border transition-colors border-black-300 text-black-700 bg-white hover:bg-[#76e6d1] hover:border-[#76e6d1] hover:text-black"
-                        >
-                          Add to Cart
-                        </button>
+                      {/* OUT OF STOCK BADGE */}
+                      {outOfStock && (
+                        <div className="absolute top-4 left-0 bg-[#EE2722] text-white text-[11px] font-semibold px-3 py-1.5 rounded-r-full z-10">
+                          Out of stock
+                        </div>
                       )}
+
+                      {/* IMAGE */}
+                      <div className="flex items-center justify-center mb-4 w-full" style={{ maxWidth: "293px", height: "164px", overflow: "hidden" }}>
+                        <Link href={`/create-demo-kits/${product.id}`} className="block w-full h-full flex justify-center items-center">
+                          <img
+                            src={displayImage}
+                            alt={displayName}
+                            style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+                          />
+                        </Link>
+                      </div>
+
+                      {/* NAME */}
+                      <Link
+                        href={`/create-demo-kits/${product.id}`}
+                        className="mb-1 duration-200 group-hover:text-blue-600 transition-colors"
+                      >
+                        <h3 className="text-[12px] sm:text-[13px] font-medium text-gray-800 leading-snug line-clamp-2 px-1">
+                          {displayName}
+                        </h3>
+                      </Link>
+
+                      {/* SKU */}
+                      <p className="text-[11px] text-gray-400 mb-3 tracking-wide mt-1">
+                        SKU# {displaySku}
+                      </p>
+
+                      {/* COLOR SWATCHES */}
+                      {hasVariants && product.variants && product.variants.length > 1 && (
+                        <div className="flex items-center justify-center gap-2 mb-4">
+                          {product.variants.map((v, i) => (
+                            <button
+                              key={i}
+                              title={v.color_name}
+                              onClick={() => setSelectedVariantIdx(product.id, i)}
+                              className={`w-7 h-7 rounded-full border-2 transition-all duration-150 ${
+                                i === selectedIdx
+                                  ? "border-gray-800 scale-110 shadow-md"
+                                  : "border-gray-200 hover:border-gray-400"
+                              }`}
+                              style={{ backgroundColor: v.color_hex || "#cccccc" }}
+                            />
+                          ))}
+                        </div>
+                      )}
+
+                      {/* BUTTON */}
+                      <div className="mt-auto w-full flex justify-center pt-2">
+                        {product.bundle_type === "Multiproduct" ? (
+                          <Link
+                            href={`/create-demo-kits/${product.id}`}
+                            className="inline-block text-[12px] font-medium py-2.5 px-8 rounded-[30px] border transition-colors border-black-300 text-black-700 bg-white hover:bg-[#76e6d1] hover:border-[#76e6d1] hover:text-black"
+                          >
+                            View Bundle
+                          </Link>
+                        ) : product.bundle_type === "bundle" ? (
+                          <Link
+                            href={`/create-demo-kits/${product.id}`}
+                            className="inline-block text-[12px] font-medium py-2.5 px-8 rounded-[2px] border transition-colors border-gray-300 text-gray-700 bg-white hover:bg-[#C65326] hover:border-gray-400 hover:text-white"
+                          >
+                            View Bundle
+                          </Link>
+                        ) : outOfStock ? (
+                          <Link
+                            href={`/create-demo-kits/${product.id}`}
+                            className="inline-block text-[12px] font-medium py-2.5 px-8 rounded-[2px] border transition-colors border-gray-300 text-gray-700 bg-white hover:bg-[#C65326] hover:border-gray-400 hover:text-white"
+                          >
+                            Add to Waitlist
+                          </Link>
+                        ) : (
+                          <button
+                            onClick={() =>
+                              addItem({
+                                id: `${product.id}__${displaySku}`, // Use unique ID for the specific variant
+                                product_id: product.id,
+                                product_name: displayName,
+                                product_sku: displaySku,
+                                main_image_url: displayImage,
+                                quantity: getQty(product.id),
+                                oem: product.oem,
+                                stock_quantity: displayQuantity,
+                              })
+                            }
+                            className="inline-block text-[12px] font-medium py-2.5 px-8 rounded-[2px] border transition-colors border-black-300 text-black-700 bg-white hover:bg-[#76e6d1] hover:border-[#76e6d1] hover:text-black"
+                          >
+                            Add to Cart
+                          </button>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </section>
@@ -467,7 +528,10 @@ export default function OEMPage() {
     </div>
   );
 }
+
+
 function FilterBlock({
+
   title,
   values,
   selected,

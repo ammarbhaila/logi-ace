@@ -6,7 +6,8 @@ import { useEffect } from "react";
 import HowItWorks from "./components/how-it-works";
 import { HeroSlider } from "./components/hero-slider";
 import DeviceNavigation from "./components/oem-cards";
-
+import MeetingRooms from "./components/meeting-rooms";
+import { LogitechMeetup } from "./components/logitech-meetup-banner";
 
 
 export default function Home() {
@@ -24,11 +25,12 @@ export default function Home() {
           </div>
         </section>
 
+        <MeetingRooms />
 
-        <section id="devices">
+        {/* <section id="devices">
           <DeviceNavigation />
-        </section>
-
+        </section> */}
+        <LogitechMeetup />
 
         <HowItWorks />
       </main>

@@ -22,6 +22,7 @@ type Product = {
   multiple_products: string[];
   stock_quantity: number;
   total_inventory: number;
+  banner_image_url: string | null;
 };
 
 export default function ProductDetailPage() {
@@ -531,6 +532,19 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Banner Section */}
+      {product.banner_image_url && (
+        <div className="w-full bg-[#F9F9F9] border-t border-b border-gray-100 py-10">
+          <div className="max-w-[1400px] mx-auto px-4 md:px-6 flex justify-center">
+            <img 
+              src={product.banner_image_url} 
+              alt="Product Banner" 
+              className="max-w-full h-auto object-contain"
+            />
+          </div>
+        </div>
+      )}
 
       <ProductEditSidebar
         isOpen={isEditSidebarOpen}
