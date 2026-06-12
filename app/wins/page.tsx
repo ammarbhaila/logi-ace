@@ -446,7 +446,7 @@ export default function ReportAWinPage() {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="w-[170px] h-[45px] bg-[#c65d2f] hover:bg-[#A84520] text-white text-sm font-medium font-inter tracking-wider rounded-[2px] transition-all disabled:opacity-50 flex items-center justify-center"
+                                className="w-[170px] h-[45px] bg-[#76E6D1] hover:bg-[#5ccdc0] text-[#333333] text-sm font-medium font-inter tracking-wider rounded-[2px] transition-all disabled:opacity-50 flex items-center justify-center"
                             >
                                 {isSubmitting ? (
                                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

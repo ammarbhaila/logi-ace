@@ -64,9 +64,10 @@ export default function ForgotPasswordPage() {
             <div
                 className="hidden lg:flex text-white lg:pl-10 2xl:pl-20 items-center"
                 style={{
-                    backgroundImage: "url('/banner1.png')",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
+                    // backgroundImage: "url('/banner1.png')",
+                    // backgroundSize: "cover",
+                    // backgroundPosition: "center",
+                    backgroundColor: "#1D3938",
                 }}
             >
                 <div className="max-w-2xl space-y-5 2xl:space-y-10">
@@ -122,7 +123,7 @@ export default function ForgotPasswordPage() {
 
                         <button
                             disabled={isLoading}
-                            className="w-[98%] h-[49px] mx-auto block rounded-xl bg-[#213643] text-white font-medium text-[16px] hover:bg-[#1a2b35] transition-all disabled:opacity-50 mt-3"
+                            className="w-[98%] h-[49px] mx-auto block rounded-xl bg-[#76E6D1] text-[#333333] font-medium text-[16px] hover:bg-[#5ccdc0] transition-all disabled:opacity-50 mt-3"
                         >
                             {isLoading ? "Sending Link..." : "Send Reset Link"}
                         </button>

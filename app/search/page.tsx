@@ -256,14 +256,14 @@ function SearchContent() {
                 {it.bundle_type === "Multiproduct" ? (
                   <Link
                     href={`/create-demo-kits/${it.id}`}
-                    className="inline-block text-[12px] font-medium py-2.5 px-8 rounded-[2px] border border-gray-300 text-gray-700 bg-white hover:bg-[#C65326] hover:border-gray-400 hover:text-white transition-colors"
+                    className="inline-block text-[12px] font-medium py-2.5 px-8 rounded-full border border-gray-300 text-gray-700 bg-white hover:bg-[#76E6D1] hover:border-gray-400 hover:text-[#000000] transition-colors"
                   >
                     View Bundle
                   </Link>
                 ) : it.bundle_type === "bundle" ? (
                   <Link
                     href={`/create-demo-kits/${it.id}`}
-                    className="inline-block text-[12px] font-medium py-2.5 px-8 rounded-[2px] border border-gray-300 text-gray-700 bg-white hover:bg-[#C65326] hover:border-gray-400 hover:text-white transition-colors"
+                    className="inline-block text-[12px] font-medium py-2.5 px-8 rounded-full border border-gray-300 text-gray-700 bg-white hover:bg-[#76E6D1] hover:border-gray-400 hover:text-[#000000] transition-colors"
                   >
                     View Bundle
                   </Link>
@@ -285,9 +285,9 @@ function SearchContent() {
                         stock_quantity: it.stock_quantity,
                       })
                     }
-                    className={`inline-block text-[12px] font-medium py-2.5 px-8 rounded-[2px] border transition-colors ${it.stock_status === "in_stock" &&
+                    className={`inline-block text-[12px] font-medium py-2.5 px-8 rounded-full border transition-colors ${it.stock_status === "in_stock" &&
                       (it.stock_quantity !== undefined && it.stock_quantity > 0)
-                      ? "border-gray-300 text-gray-700 bg-white hover:bg-[#C65326] hover:border-gray-400 hover:text-white"
+                      ? "border-gray-300 text-gray-700 bg-white hover:bg-[#76E6D1] hover:border-gray-400 hover:text-[#000000]"
                       : "border-gray-200 text-gray-300 cursor-not-allowed bg-white"
                       }`}
                   >

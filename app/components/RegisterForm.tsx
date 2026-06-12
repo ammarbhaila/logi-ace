@@ -70,12 +70,12 @@ export default function RegisterForm() {
     <div className="flex w-full bg-white">
 
       {/* ── Left Side: Fixed Panel — pure Tailwind ── */}
-      <div className="hidden lg:flex fixed top-0 left-0 w-1/2 h-screen z-10 flex-col text-white overflow-hidden">
-        <img
+      <div className="hidden lg:flex fixed top-0 left-0 w-1/2 h-screen z-10 flex-col text-white overflow-hidden bg-[#1D3938]">
+        {/* <img
           src="/banner1.png"
           alt="Registration Banner"
           className="absolute inset-0 w-full h-full object-cover object-top"
-        />
+        /> */}
 
         <div className="relative z-10">
           <div className="max-w-2xl space-y-3 2xl:space-y-10 grid justify-center items-between pt-40 xl:pt-45  mx-auto">
@@ -84,7 +84,7 @@ export default function RegisterForm() {
                 Welcome to Logi-ACE CDW
               </h1>
               <p className="text-white/90 font-inter font-normal lg:text-[18px] xl:text-[20px] 2xl:text-[22px] lg:max-w-[440px] xl:max-w-[550px] 2xl:max-w-[600px]">
-                Get started by registering your account - follow these simple steps to create and manage your demo kits!
+                Get started by registering your account follow these simple steps to create and manage your demo kits!
               </p>
             </div>
 
@@ -199,7 +199,7 @@ export default function RegisterForm() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full h-[50px] rounded-md bg-[#213643] text-white font-medium text-[16px] hover:bg-[#1a2b35] transition-all disabled:opacity-50"
+              className="w-full h-[50px] rounded-md bg-[#76E6D1] text-[#333333] font-medium text-[16px] hover:bg-[#5ccdc0] transition-all disabled:opacity-50"
             >
               {isLoading ? "Registering..." : "Register"}
             </button>

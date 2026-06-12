@@ -298,9 +298,10 @@ export default function LoginForm() {
       <div
         className="hidden lg:flex text-white lg:pl-10 2xl:pl-20 items-center"
         style={{
-          backgroundImage: "url('/banner1.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          // backgroundImage: "url('/banner1.png')",
+          // backgroundSize: "cover",
+          // backgroundPosition: "center",
+          backgroundColor: "#1D3938",
         }}
       >
         <div className="max-w-2xl space-y-5 2xl:space-y-10">
@@ -308,7 +309,7 @@ export default function LoginForm() {
             <h1 className="lg:text-[32px] 2xl:text-[40px] font-semibold mb-4">
               Welcome to Logi-ACE CDW
             </h1>
-            <p className="text-white/90 font-inter font-normal lg:text-[18px] xl:text-[20px] 2xl:text-[22px] lg:max-w-[440px] xl:max-w-[550px] 2xl:max-w-[600px]">
+            <p className="text-white/90 font-inter-regular font-normal lg:text-[18px] xl:text-[20px] 2xl:text-[22px] lg:max-w-[440px] xl:max-w-[550px] 2xl:max-w-[600px]">
               Get started by registering your account and follow the simple
               steps to create and manage your Demo Kits.
             </p>
@@ -395,14 +396,14 @@ export default function LoginForm() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="h-[48px] w-full sm:w-[185px] rounded-[2px] bg-[#213643] text-white font-semibold text-[15px] hover:bg-[#1a2b35] transition-all disabled:opacity-50"
+                className="h-[48px] w-full sm:w-[185px] rounded-full bg-[#76E6D1] text-[#333333] font-semibold text-[15px] hover:bg-[#55c9b5] transition-all disabled:opacity-50"
               >
                 {isLoading ? "Logging in..." : "Login"}
               </button>
 
               <Link
                 href="/register"
-                className="h-[48px] w-full sm:w-[185px] rounded-[2px] border border-gray-900 text-gray-900 font-semibold text-[15px] flex items-center justify-center hover:bg-gray-50 transition-all"
+                className="h-[48px] w-full sm:w-[185px] rounded-full border border-gray-900 text-gray-900 font-semibold text-[15px] flex items-center justify-center hover:bg-gray-50 transition-all"
               >
                 Register
               </Link>

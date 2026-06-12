@@ -164,7 +164,7 @@ export default function Header() {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 bg-white ${isAuthPage ? "" : "shadow-sm"}`}>
       <div className="max-w-[1900px] mx-auto">
-        <div className={`px-4 sm:px-6 lg:px-10 py-4 sm:py-5 md:py-2 lg:py-3 2xl:py-4 ${isAuthPage ? "" : "border-b border-gray-200"}`}>
+        <div className={`px-4 sm:px-6 lg:px-10 py-4 sm:py-5 md:py-2 lg:py-2 2xl:py-4 ${isAuthPage ? "" : "border-b border-gray-200"}`}>
           <div className="flex items-center justify-between">
 
             {/* LOGO */}

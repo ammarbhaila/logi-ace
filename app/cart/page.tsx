@@ -130,7 +130,7 @@ export default function CartPage() {
               <div className="space-y-3">
                 <SummaryRow label="Number of Item(s)" value={`${totalItems}`} />
                 <SummaryRow label="Ships Within" value="48 hours of Approval" />
-                <SummaryRow label="Shipment Type" value="Overnight" />
+                <SummaryRow label="Shipment Type" value="Priority" />
                 <SummaryRow label="Demo Period" value="Up to 30 Days" />
               </div>
             </div>
@@ -140,7 +140,7 @@ export default function CartPage() {
               href={items.length === 0 ? "#" : "/checkout"}
               className={`flex items-center justify-center w-full lg:max-w-[360px] mx-auto lg:ml-2 h-[55px] rounded-[5px] font-poppins text-lg transition ${items.length === 0
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed pointer-events-none"
-                : "bg-[#c65d2f] hover:bg-[#b05229] text-white shadow-sm"
+                : "bg-[#76E6D1] hover:bg-[#5ccdc0] text-[#333333] shadow-sm"
                 }`}
             >
               Proceed to Checkout
