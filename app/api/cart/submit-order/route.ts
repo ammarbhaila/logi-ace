@@ -22,6 +22,14 @@ export async function POST(request: NextRequest) {
     const deviceOpportunitySizeUnits = formData.deviceOpportunitySizeUnits ? parseInt(formData.deviceOpportunitySizeUnits, 10) : null;
     const revenueOpportunitySize = formData.revenueOpportunitySize ? parseFloat(formData.revenueOpportunitySize) : null;
 
+    let variantNotes = "";
+    for (const item of cartItems) {
+      if (item.id.includes("__") || (item.product_name && item.product_name !== item.product_id)) {
+        variantNotes += `\nVariant ordered: ${item.product_name} (SKU: ${item.product_sku})`;
+      }
+    }
+    const finalNotes = formData.notes ? `${formData.notes}\n${variantNotes}` : variantNotes.trim();
+
     // Insert into checkout_requests table (id is now serial)
     const { data: checkoutData, error: checkoutError } = await supabaseAdmin
       .from('checkout_requests')
@@ -41,7 +49,7 @@ export async function POST(request: NextRequest) {
         sps_account_number: formData.spsAccountNumber,
         estimated_closed_date: formData.estimatedClosedDate || null,
         competitive_vendor: formData.competitiveVendor || '',
-        notes: formData.notes || '',
+        notes: finalNotes || '',
         approved_deal_reg: approvedDealReg,
         reg_number: formData.regNumber || '',
         desired_demo_delivery_date: formData.desiredDemoDeliveryDate || '',

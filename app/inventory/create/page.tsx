@@ -11,6 +11,7 @@ type VariantInput = {
   product_name: string;
   product_sku: string;
   stock_quantity: number;
+  total_inventory: number;
   _imageFile: File | null;
   _imagePreview: string | null;
   image_url: string;
@@ -112,7 +113,7 @@ export default function CreateInventoryPage() {
     e.preventDefault();
     setLoading(true);
 
-    const submissionData = {
+    const baseSubmissionData = {
       ...form,
       inventory_owner: form.inventory_owner || null,
       product_type: (form.product_type && form.product_type.length > 0) ? form.product_type : null,
@@ -126,10 +127,26 @@ export default function CreateInventoryPage() {
       menu_order: form.menu_order || 0,
     };
 
+    let payload: any[] = [];
+
+    if (variants.length > 0) {
+      payload = variants.map(v => ({
+        ...baseSubmissionData,
+        product_name: v.product_name || form.product_name,
+        product_sku: v.product_sku || form.product_sku,
+        stock_quantity: Number(v.stock_quantity) || Number(form.stock_quantity),
+        total_inventory: Number(v.total_inventory) || Number(form.total_inventory),
+        color_name: v.color_name,
+        color_hex: v.color_hex,
+      }));
+    } else {
+      payload = [baseSubmissionData];
+    }
+
     const res = await fetch("/api/inventory/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(submissionData),
+      body: JSON.stringify(payload),
     });
 
     if (!res.ok) {
@@ -140,61 +157,51 @@ export default function CreateInventoryPage() {
       return;
     }
 
-    const createdProduct = await res.json();
+    const createdProducts = await res.json();
+    const createdArray = Array.isArray(createdProducts) ? createdProducts : [createdProducts];
 
-    // Upload variant images
-    const finalVariants = [];
-    for (const v of variants) {
-      let variantImageUrl = v.image_url || "";
-      if (v._imageFile) {
-        variantImageUrl = await uploadInventoryImage(v._imageFile, createdProduct.id);
-      }
-      finalVariants.push({
-        color_name: v.color_name,
-        color_hex: v.color_hex,
-        product_name: v.product_name || form.product_name, // fallback to base if empty
-        product_sku: v.product_sku || form.product_sku,
-        stock_quantity: Number(v.stock_quantity) || Number(form.stock_quantity),
-        image_url: variantImageUrl,
-      });
-    }
-
-    let mainImageUrl = finalVariants[0]?.image_url || null;
+    // Upload images
+    const baseId = createdArray[0].id;
+    let baseMainImageUrl = null;
     let bannerImageUrl = null;
     const galleryUrls: string[] = [];
 
-    if (!mainImageUrl && mainImage) {
-      mainImageUrl = await uploadInventoryImage(mainImage, createdProduct.id);
+    if (mainImage) {
+      baseMainImageUrl = await uploadInventoryImage(mainImage, baseId);
     }
-
     if (bannerImage) {
-      bannerImageUrl = await uploadInventoryImage(bannerImage, createdProduct.id);
+      bannerImageUrl = await uploadInventoryImage(bannerImage, baseId);
     }
-
     for (const img of galleryImages) {
-      const url = await uploadInventoryImage(img, createdProduct.id);
+      const url = await uploadInventoryImage(img, baseId);
       galleryUrls.push(url);
     }
 
-    // Use first variant to update base fields for backward compatibility
-    const baseUpdates = finalVariants.length > 0 ? {
-      product_name: finalVariants[0].product_name,
-      product_sku: finalVariants[0].product_sku,
-      stock_quantity: finalVariants[0].stock_quantity,
-    } : {};
+    // Now update each created product with images
+    for (let i = 0; i < createdArray.length; i++) {
+      const product = createdArray[i];
+      let mainImageUrl = baseMainImageUrl;
 
-    await fetch("/api/inventory/update", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: createdProduct.id,
-        main_image_url: mainImageUrl,
-        banner_image_url: bannerImageUrl,
-        image_urls: galleryUrls,
-        variants: finalVariants.length > 0 ? finalVariants : null,
-        ...baseUpdates
-      }),
-    });
+      if (variants.length > 0 && variants[i]) {
+        const v = variants[i];
+        if (v._imageFile) {
+          mainImageUrl = await uploadInventoryImage(v._imageFile, product.id);
+        } else if (v.image_url) {
+          mainImageUrl = v.image_url;
+        }
+      }
+
+      await fetch("/api/inventory/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: product.id,
+          main_image_url: mainImageUrl,
+          banner_image_url: bannerImageUrl,
+          image_urls: galleryUrls,
+        }),
+      });
+    }
 
     setLoading(false);
     router.push("/inventory");
@@ -236,7 +243,7 @@ export default function CreateInventoryPage() {
                   onClick={() =>
                     setVariants((prev) => [
                       ...prev,
-                      { color_name: "", color_hex: "#cccccc", product_name: "", product_sku: "", stock_quantity: 0, _imageFile: null, _imagePreview: null, image_url: "" },
+                      { color_name: "", color_hex: "#cccccc", product_name: "", product_sku: "", stock_quantity: 0, total_inventory: 0, _imageFile: null, _imagePreview: null, image_url: "" },
                     ])
                   }
                   className="flex items-center gap-1 px-3 py-1.5 bg-purple-600 text-white rounded-md text-sm font-medium hover:bg-purple-700 transition"
@@ -259,6 +266,7 @@ export default function CreateInventoryPage() {
                         product_name: form.product_name, 
                         product_sku: form.product_sku, 
                         stock_quantity: form.stock_quantity, 
+                        total_inventory: form.total_inventory,
                         _imageFile: mainImage, 
                         _imagePreview: mainImagePreview, 
                         image_url: "" 
@@ -340,8 +348,8 @@ export default function CreateInventoryPage() {
                         required
                       />
                     </div>
-                    {/* SKU & Qty */}
-                    <div className="md:col-span-2 grid grid-cols-2 gap-2">
+                    {/* SKU & Qty & Total */}
+                    <div className="md:col-span-2 grid grid-cols-3 gap-2">
                       <div>
                         <label className="block text-xs font-medium text-gray-600 mb-1">SKU</label>
                         <input
@@ -356,13 +364,25 @@ export default function CreateInventoryPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">Qty</label>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">Stock Qty</label>
                         <input
                           type="number"
                           className="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-purple-400"
                           value={v.stock_quantity}
                           onChange={(e) =>
                             setVariants((prev) => prev.map((item, idx) => idx === i ? { ...item, stock_quantity: Number(e.target.value) } : item))
+                          }
+                          min="0"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">Total Qty</label>
+                        <input
+                          type="number"
+                          className="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-purple-400"
+                          value={v.total_inventory}
+                          onChange={(e) =>
+                            setVariants((prev) => prev.map((item, idx) => idx === i ? { ...item, total_inventory: Number(e.target.value) } : item))
                           }
                           min="0"
                         />
